@@ -1,0 +1,213 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 240" width="900" height="240" role="img" aria-label="WoldenMn. 45 depots, 1 visible publiquement, 9 langages. TypeScript, Python, Rust, dotNET, PowerShell.">
+  <title>WoldenMn &#8212; 45 depots, 1 visible</title>
+  <defs>
+    <linearGradient id="scan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3ecf8e" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#3ecf8e" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#3ecf8e" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="carte"><rect x="1" y="1" width="898" height="238" rx="10"/></clipPath>
+  </defs>
+
+  <rect width="900" height="240" rx="10" fill="#12141a"/>
+  <g clip-path="url(#carte)">
+  <text x="540" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">0</text>
+  <text x="553" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">1</text>
+  <text x="566" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">#</text>
+  <text x="579" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">/</text>
+  <text x="592" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">%</text>
+  <text x="605" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">$</text>
+  <text x="618" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">&amp;</text>
+  <text x="631" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">@</text>
+  <text x="644" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">8</text>
+  <text x="657" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">?</text>
+  <text x="670" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">+</text>
+  <text x="683" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">=</text>
+  <text x="696" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">-</text>
+  <text x="709" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">0</text>
+  <text x="722" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">1</text>
+  <text x="735" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">#</text>
+  <text x="748" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">/</text>
+  <text x="761" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">%</text>
+  <text x="774" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">$</text>
+  <text x="787" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">&amp;</text>
+  <text x="800" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">@</text>
+  <text x="813" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">8</text>
+  <text x="826" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">?</text>
+  <text x="839" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">+</text>
+  <text x="852" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">=</text>
+  <text x="865" y="44" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">-</text>
+  <text x="540" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">0</text>
+  <text x="553" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">1</text>
+  <text x="566" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">#</text>
+  <text x="579" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">/</text>
+  <text x="592" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">%</text>
+  <text x="605" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">$</text>
+  <text x="618" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">&amp;</text>
+  <text x="631" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">@</text>
+  <text x="644" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">8</text>
+  <text x="657" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">?</text>
+  <text x="670" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">+</text>
+  <text x="683" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">=</text>
+  <text x="696" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">-</text>
+  <text x="709" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">0</text>
+  <text x="722" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">1</text>
+  <text x="735" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">#</text>
+  <text x="748" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">/</text>
+  <text x="761" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">%</text>
+  <text x="774" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">$</text>
+  <text x="787" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">&amp;</text>
+  <text x="800" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">@</text>
+  <text x="813" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">8</text>
+  <text x="826" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">?</text>
+  <text x="839" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">+</text>
+  <text x="852" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">=</text>
+  <text x="865" y="59" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">-</text>
+  <text x="540" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">0</text>
+  <text x="553" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">1</text>
+  <text x="566" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">#</text>
+  <text x="579" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">/</text>
+  <text x="592" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">%</text>
+  <text x="605" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">$</text>
+  <text x="618" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">&amp;</text>
+  <text x="631" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">@</text>
+  <text x="644" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">8</text>
+  <text x="657" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">?</text>
+  <text x="670" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">+</text>
+  <text x="683" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">=</text>
+  <text x="696" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">-</text>
+  <text x="709" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">0</text>
+  <text x="722" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">1</text>
+  <text x="735" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">#</text>
+  <text x="748" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">/</text>
+  <text x="761" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">%</text>
+  <text x="774" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">$</text>
+  <text x="787" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">&amp;</text>
+  <text x="800" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">@</text>
+  <text x="813" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">8</text>
+  <text x="826" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">?</text>
+  <text x="839" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">+</text>
+  <text x="852" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">=</text>
+  <text x="865" y="74" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">-</text>
+  <text x="540" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">0</text>
+  <text x="553" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">1</text>
+  <text x="566" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">#</text>
+  <text x="579" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">/</text>
+  <text x="592" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">%</text>
+  <text x="605" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">$</text>
+  <text x="618" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">&amp;</text>
+  <text x="631" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">@</text>
+  <text x="644" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">8</text>
+  <text x="657" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">?</text>
+  <text x="670" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">+</text>
+  <text x="683" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">=</text>
+  <text x="696" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">-</text>
+  <text x="709" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">0</text>
+  <text x="722" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">1</text>
+  <text x="735" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">#</text>
+  <text x="748" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">/</text>
+  <text x="761" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">%</text>
+  <text x="774" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">$</text>
+  <text x="787" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">&amp;</text>
+  <text x="800" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">@</text>
+  <text x="813" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">8</text>
+  <text x="826" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">?</text>
+  <text x="839" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">+</text>
+  <text x="852" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">=</text>
+  <text x="865" y="89" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">-</text>
+  <text x="540" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">0</text>
+  <text x="553" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">1</text>
+  <text x="566" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">#</text>
+  <text x="579" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">/</text>
+  <text x="592" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">%</text>
+  <text x="605" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">$</text>
+  <text x="618" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">&amp;</text>
+  <text x="631" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">@</text>
+  <text x="644" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">8</text>
+  <text x="657" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">?</text>
+  <text x="670" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">+</text>
+  <text x="683" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">=</text>
+  <text x="696" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">-</text>
+  <text x="709" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">0</text>
+  <text x="722" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">1</text>
+  <text x="735" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">#</text>
+  <text x="748" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">/</text>
+  <text x="761" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">%</text>
+  <text x="774" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">$</text>
+  <text x="787" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">&amp;</text>
+  <text x="800" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">@</text>
+  <text x="813" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">8</text>
+  <text x="826" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">?</text>
+  <text x="839" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">+</text>
+  <text x="852" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">=</text>
+  <text x="865" y="104" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">-</text>
+  <text x="540" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">0</text>
+  <text x="553" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">1</text>
+  <text x="566" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">#</text>
+  <text x="579" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">/</text>
+  <text x="592" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">%</text>
+  <text x="605" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">$</text>
+  <text x="618" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">&amp;</text>
+  <text x="631" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">@</text>
+  <text x="644" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">8</text>
+  <text x="657" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">?</text>
+  <text x="670" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">+</text>
+  <text x="683" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">=</text>
+  <text x="696" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">-</text>
+  <text x="709" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">0</text>
+  <text x="722" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">1</text>
+  <text x="735" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">#</text>
+  <text x="748" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">/</text>
+  <text x="761" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">%</text>
+  <text x="774" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">$</text>
+  <text x="787" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">&amp;</text>
+  <text x="800" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">@</text>
+  <text x="813" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">8</text>
+  <text x="826" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">?</text>
+  <text x="839" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">+</text>
+  <text x="852" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">=</text>
+  <text x="865" y="119" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" opacity="0.07">-</text>
+
+  <rect x="-200" y="1" width="200" height="238" fill="url(#scan)">
+    <animate attributeName="x" values="-200;900" dur="9.0s" repeatCount="indefinite"/>
+  </rect>
+
+  <rect x="56" y="52" width="3" height="18" fill="#3ecf8e"/>
+  <text x="72" y="66" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="11" fill="#949aa8" letter-spacing="3">SIGNAL ACQUIS</text>
+
+  <text x="79.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#949aa8" opacity="0">#<animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.0600;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="79.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#e6e8ee" opacity="1">W<animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.0600;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="125.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#949aa8" opacity="0">%<animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.0950;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="125.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#e6e8ee" opacity="1">O<animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.0950;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="171.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#949aa8" opacity="0">&amp;<animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.1300;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="171.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#e6e8ee" opacity="1">L<animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.1300;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="217.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#949aa8" opacity="0">@<animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.1650;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="217.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#e6e8ee" opacity="1">D<animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.1650;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="263.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#949aa8" opacity="0">$<animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.2000;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="263.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#e6e8ee" opacity="1">E<animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.2000;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="309.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#949aa8" opacity="0">/<animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.2350;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="309.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#e6e8ee" opacity="1">N<animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.2350;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="355.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#949aa8" opacity="0">?<animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.2700;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="355.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#e6e8ee" opacity="1">M<animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.2700;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="401.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#949aa8" opacity="0">8<animate attributeName="opacity" values="1;0;1;1" keyTimes="0;0.3050;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+  <text x="401.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#e6e8ee" opacity="1">N<animate attributeName="opacity" values="0;1;0;0" keyTimes="0;0.3050;0.9000;1" dur="9.0s" repeatCount="indefinite" calcMode="discrete"/></text>
+
+  <rect x="56" y="130" width="368" height="1" fill="#2f3441"/>
+  <text x="56" y="152" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="13" fill="#949aa8">outils qui tournent sur une seule machine, correctement</text>
+
+  <rect x="42" y="176" width="816" height="1" fill="#2f3441"/>
+  <text x="56" y="196" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="10" fill="#949aa8" letter-spacing="1.6">DEPOTS</text>
+  <text x="56" y="217" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="19" font-weight="700" fill="#e6e8ee">45</text>
+  <text x="206" y="196" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="10" fill="#949aa8" letter-spacing="1.6">VISIBLES</text>
+  <text x="206" y="217" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="19" font-weight="700" fill="#e6e8ee">01</text>
+  <text x="356" y="196" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="10" fill="#949aa8" letter-spacing="1.6">LANGAGES</text>
+  <text x="356" y="217" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="19" font-weight="700" fill="#e6e8ee">09</text>
+
+  <text x="844" y="196" text-anchor="end" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="10" fill="#949aa8" letter-spacing="1.6">TS &#183; PYTHON &#183; RUST &#183; DOTNET &#183; PWSH</text>
+  <text x="844" y="217" text-anchor="end" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="12" fill="#949aa8">le reste est prive</text>
+  <circle cx="860" cy="212" r="4" fill="#3ecf8e">
+    <animate attributeName="opacity" values="1;1;0.15;1;1" keyTimes="0;0.45;0.5;0.55;1" dur="2.6s" repeatCount="indefinite"/>
+  </circle>
+  </g>
+  <rect x="0.5" y="0.5" width="899" height="239" rx="10" fill="none" stroke="#2f3441"/>
+</svg>
