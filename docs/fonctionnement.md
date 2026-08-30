@@ -10,7 +10,7 @@ Depot special GitHub : un depot **public** nomme exactement comme le compte
 
 ```bash
 python build_banner.py                 # interroge l'API
-python build_banner.py --offline 45 1 9  # valeurs explicites, pour tester
+python build_banner.py --offline TOTAL PUBLICS LANGAGES  # valeurs explicites, pour tester
 ```
 
 Si l'API est injoignable, le script **echoue et n'ecrit rien** : mieux vaut une
@@ -36,7 +36,7 @@ affiche donc `WOLDENMN`, jamais le brouillage fige.
 `.github/workflows/refresh-banner.yml` relance la generation chaque lundi.
 
 Il exige un secret `PROFILE_STATS_TOKEN` : le `GITHUB_TOKEN` par defaut d'Actions
-ne voit que ce depot-ci, il compterait 1 depot au lieu de 45. Creer un PAT en
+ne voit que ce depot-ci, il compterait les seuls depots publics. Creer un PAT en
 **lecture seule** (classic : `read:user` + `repo`) et le poser dans
 Settings > Secrets and variables > Actions.
 
