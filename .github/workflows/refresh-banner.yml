@@ -26,7 +26,7 @@ jobs:
         run: |
           if [ -z "$GH_TOKEN" ]; then
             echo "::error::Secret PROFILE_STATS_TOKEN absent. Sans lui, seuls les depots"
-            echo "::error::publics seraient comptes et la banniere afficherait 1 au lieu de 45."
+            echo "::error::publics seraient comptes et la banniere serait fausse."
             echo "::error::Cree un PAT en lecture seule (classic: read:user + repo) et ajoute-le"
             echo "::error::dans Settings > Secrets and variables > Actions."
             exit 1

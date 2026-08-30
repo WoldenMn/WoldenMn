@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/banner.svg" alt="WoldenMn — 45 dépôts, 1 visible. TypeScript, Python, Rust, .NET, PowerShell." width="900">
+  <img src="./assets/banner.svg" alt="WoldenMn. Bannière : nombre de dépôts, dépôts publics et langages, compteurs régénérés depuis l'API GitHub. TypeScript, Python, Rust, .NET, PowerShell." width="900">
 </div>
 
 ```console
@@ -7,7 +7,7 @@ $ whoami
   WoldenMn — France
 
 $ ls -a ~/workspace
-  45 entrées. 44 masquées.
+  quelques entrées visibles. Le reste est masqué.
 
 $ cat ./manifeste
   Windows desktop, assumé. Pas de cloud là où le local suffit.
@@ -30,8 +30,9 @@ $ cat ./manifeste
 
 <br>
 
-Quarante-quatre dépôts privés : outils de poste, applications desktop livrées,
-serveurs MCP, bots, pipelines. Rien d'abandonné, rien de public.
+Les dépôts privés : outils de poste, applications desktop livrées, serveurs MCP,
+bots, pipelines audio et vidéo. Rien d'abandonné. Le compte exact est dans la
+bannière, qui le tient de l'API.
 
 Ce compte n'est pas une vitrine. C'est un atelier fermé dont on aperçoit
 la porte.
@@ -43,8 +44,9 @@ la porte.
 
 <br>
 
-Le seul dépôt visible est un fork : [`rtk`](https://github.com/WoldenMn/rtk),
-un proxy CLI qui réduit la consommation de tokens des agents.
+Deux dépôts sont visibles. Celui-ci, dont le code génère la bannière que vous venez
+de voir. Et [`rtk`](https://github.com/WoldenMn/rtk), un fork d'un proxy CLI qui
+réduit la consommation de tokens des agents.
 
 </details>
 
