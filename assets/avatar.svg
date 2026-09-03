@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 460" width="460" height="460" role="img" aria-label="WoldenMn">
+  <rect width="460" height="460" fill="#12141a"/>
+  <circle cx="230" cy="230" r="218" fill="none" stroke="#2f3441" stroke-width="3"/>
+  <rect x="112" y="112" width="152" height="152" rx="14" fill="#2f3441"/>
+  <text x="188" y="238" text-anchor="middle"
+        font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace"
+        font-size="132" font-weight="700" fill="#e6e8ee" letter-spacing="-4">W</text>
+  <rect x="278" y="112" width="70" height="152" rx="14" fill="#3ecf8e"/>
+  <rect x="112" y="278" width="152" height="70"  rx="14" fill="#525a6b"/>
+  <rect x="278" y="278" width="70"  height="70"  rx="14" fill="#2f3441"/>
+</svg>

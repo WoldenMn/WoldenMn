@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img"
+     aria-label="WoldenMn/WoldenMn : une banniere qui compte les depots elle-meme">
+  <rect width="1280" height="640" fill="#12141a"/>
+  <rect x="48" y="48" width="1184" height="544" rx="18" fill="none" stroke="#2f3441" stroke-width="2"/>
+  <g font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace">
+    <g fill="#3ecf8e" font-size="17" opacity="0.16" letter-spacing="1">
+      <text x="906" y="122">01&#8260;%1&amp;$0?!&#183;</text>
+      <text x="906" y="150">0!&amp;&#8260;%1&amp;$0?!</text>
+      <text x="906" y="178">01&#8260;%1&amp;$0?!&#183;</text>
+      <text x="906" y="206">?1&#8260;%&amp;&amp;$0?!&#183;</text>
+      <text x="906" y="234">01&#8260;%1&amp;$0?!&#183;</text>
+    </g>
+    <rect x="112" y="106" width="7" height="30" fill="#3ecf8e"/>
+    <text x="138" y="130" fill="#949aa8" font-size="21" letter-spacing="4.5">SIGNAL ACQUIS</text>
+
+    <text x="112" y="300" font-size="104" font-weight="700" letter-spacing="-2">
+      <tspan fill="#5b6373">WoldenMn</tspan><tspan fill="#3ecf8e">/</tspan><tspan fill="#e6e8ee">WoldenMn</tspan>
+    </text>
+
+    <text x="114" y="376" fill="#949aa8" font-size="28">Une banniere qui compte les depots elle-meme,</text>
+    <text x="114" y="418" fill="#949aa8" font-size="28">au lieu de porter un chiffre ecrit a la main.</text>
+
+    <line x1="112" y1="486" x2="1168" y2="486" stroke="#2f3441" stroke-width="2"/>
+    <g font-size="22" letter-spacing="3">
+      <text x="112" y="540" fill="#949aa8">PYTHON</text>
+      <text x="248" y="540" fill="#3ecf8e" opacity="0.5">&#183;</text>
+      <text x="280" y="540" fill="#949aa8">SVG</text>
+      <text x="358" y="540" fill="#3ecf8e" opacity="0.5">&#183;</text>
+      <text x="390" y="540" fill="#949aa8">SMIL</text>
+      <text x="1168" y="540" fill="#5b6373" text-anchor="end">github.com/WoldenMn</text>
+    </g>
+  </g>
+</svg>
