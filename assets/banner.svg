@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 240" width="900" height="240" role="img" aria-label="WoldenMn. 49 depots, 2 visible publiquement, 9 langages. TypeScript, Python, Rust, dotNET, PowerShell.">
-  <title>WoldenMn &#8212; 49 depots, 2 visible</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 240" width="900" height="240" role="img" aria-label="WoldenMn. 50 depots, 2 visible publiquement, 9 langages. TypeScript, Python, Rust, dotNET, PowerShell.">
+  <title>WoldenMn &#8212; 50 depots, 2 visible</title>
   <defs>
     <linearGradient id="scan" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#3ecf8e" stop-opacity="0"/>
@@ -197,7 +197,7 @@
 
   <rect x="42" y="176" width="816" height="1" fill="#2f3441"/>
   <text x="56" y="196" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="10" fill="#949aa8" letter-spacing="1.6">DEPOTS</text>
-  <text x="56" y="217" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="19" font-weight="700" fill="#e6e8ee">49</text>
+  <text x="56" y="217" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="19" font-weight="700" fill="#e6e8ee">50</text>
   <text x="206" y="196" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="10" fill="#949aa8" letter-spacing="1.6">VISIBLES</text>
   <text x="206" y="217" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="19" font-weight="700" fill="#e6e8ee">02</text>
   <text x="356" y="196" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="10" fill="#949aa8" letter-spacing="1.6">LANGAGES</text>
