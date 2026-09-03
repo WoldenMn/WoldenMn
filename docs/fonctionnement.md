@@ -31,17 +31,29 @@ Les attributs `opacity` portent l'etat de **repos** (titre lisible), et les
 animations les surchargent tant qu'elles tournent. Un moteur qui n'anime pas
 affiche donc `WOLDENMN`, jamais le brouillage fige.
 
-## Le rafraichissement automatique
+## Le rafraichissement, a la demande
 
-`.github/workflows/refresh-banner.yml` relance la generation chaque lundi.
+```powershell
+.\rafraichir.ps1        # regenere et montre ce qui a bouge
+.\rafraichir.ps1 -Push  # regenere, commite et publie
+```
 
-Il exige un secret `PROFILE_STATS_TOKEN` : le `GITHUB_TOKEN` par defaut d'Actions
-ne voit que ce depot-ci, il compterait les seuls depots publics. Creer un PAT en
-**lecture seule** (classic : `read:user` + `repo`) et le poser dans
-Settings > Secrets and variables > Actions.
+Le script s'arrete si `build_banner.py` echoue, et la banniere reste alors
+intacte plutot que de porter un chiffre faux. Verifie le 2026-09-03 dans les
+deux sens : compteurs a jour quand l'API repond, aucune ecriture quand `gh` est
+hors d'atteinte.
 
-Sans ce secret, le workflow **echoue explicitement** au lieu de publier des
-compteurs faux.
+### Pourquoi plus de GitHub Actions
+
+Un workflow hebdomadaire tournait ici jusqu'au 2026-09-03. Il exigeait un secret
+`PROFILE_STATS_TOKEN`, parce que le `GITHUB_TOKEN` d'Actions ne voit que ce
+depot-ci et aurait compte deux depots au lieu de cinquante. Le secret n'a jamais
+ete pose : le workflow a echoue a chaque passage, deux lundis de suite, en
+laissant des croix rouges sur un depot dont le seul role est de bien paraitre.
+
+Le choix retenu est d'assumer la relance manuelle plutot que de deposer un jeton
+a portee large dans un depot public. L'ancien workflow reste dans
+`_archive/2026-09-03_workflow-vers-script-local/` si le compromis change.
 
 ## Direction visuelle
 
