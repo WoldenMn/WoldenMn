@@ -9,3 +9,4 @@ _err.txt
 banniere-apercu.png
 _archive/
 export/
+.pytest_cache/
