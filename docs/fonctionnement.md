@@ -72,14 +72,28 @@ Il ecrit `export/avatar.png` (920x920) et `export/social-preview.png` (1280x640)
 hors du depot puisque ce sont des derives. Le binaire Edge y est **cherche**, jamais
 suppose : son chemin porte un numero de version qui change a chaque mise a jour.
 
-### Le piege du rendu, deja paye
+### Le piege du rendu, paye deux fois
 
 Edge rend la main **avant** d'avoir vide son tampon sur le disque. Verifier
 l'existence du PNG dans la foulee est une course, et elle repond « absent » sur un
 rendu parfaitement reussi : le fichier arrive une fraction de seconde plus tard.
-`Wait-Fichier` attend donc que le fichier apparaisse **puis** que sa taille cesse
-de bouger, avec un plafond de 20 s. Sans cette attente, le script echoue au hasard
-sur des rendus corrects, et fait accuser Edge a sa place.
+Sans attente, le script echoue au hasard sur des rendus corrects, et fait accuser
+Edge a sa place.
+
+La premiere correction attendait que la **taille** cesse de bouger. Elle a tenu
+trois jours. Le 2026-09-06, un test l'a refutee : sur un fichier ecrit par
+morceaux, `Wait-Fichier` rendait 1 Ko sur 10. Deux lectures identiques ne prouvent
+pas la fin de l'ecriture, seulement que rien n'a bouge pendant l'intervalle de
+scrutation. Un PNG tronque serait passe pour bon, et personne ne l'aurait vu.
+
+La complétude se lit desormais **dans le fichier** : signature de 8 octets en tete,
+chunk `IEND` en queue. Aucun chronometre, donc rien a regler et rien qui depende de
+la vitesse du disque. `Test-PngComplet` ouvre en partage lecture-ecriture, puisque
+Edge tient encore le fichier.
+
+> Lecon generale : quand une garde repose sur « ca n'a pas bouge depuis un moment »,
+> c'est une heuristique deguisee en preuve. Si le format porte sa propre marque de
+> fin, la lire coute moins cher et ne ment pas.
 
 ### Pourquoi cet avatar-la
 
@@ -94,7 +108,16 @@ variantes perdantes sont dans `_archive/2026-09-03_avatars-non-retenus/`.
 python -m pytest tests/
 ```
 
-Sept tests, tous sur des promesses reelles plutot que sur la forme du dessin :
+```powershell
+powershell -NoProfile -Command "Invoke-Pester .\tests\Scripts.Tests.ps1"
+```
+
+Deux suites : 7 tests Python sur `build_banner.py`, 12 tests Pester sur les deux
+scripts PowerShell. Pester 5 vit dans les modules de **Windows PowerShell 5.1** sur
+ce poste, pas dans ceux de pwsh 7 — d'ou l'appel par `powershell`, sans quoi c'est
+la 3.4 livree avec Windows qui repond et la syntaxe ne passe pas.
+
+Cote Python, sept tests sur des promesses reelles plutot que sur la forme du dessin :
 les compteurs rendus sur deux chiffres, le SVG bien forme, **aucun attribut qui
 pointe hors du fichier** (camo sert la banniere avec `default-src 'none'`, un appel
 sortant y meurt sans bruit), le titre lisible quand rien ne s'anime, et surtout le
@@ -103,13 +126,32 @@ refus d'ecrire quand l'API est muette.
 Ce dernier est le seul qui compte vraiment : c'est la promesse du depot entier.
 Elle n'etait tenue que par une verification a la main jusqu'au 2026-09-06.
 
+Cote PowerShell, les tests gardent le commit scope de `rafraichir.ps1` (un `git
+commit` sans pathspec publierait tout l'index sous un message qui ne le mentionne
+pas, c'est arrive), le refus de publier sans `-Push`, la recherche du binaire Edge,
+et la complétude du PNG : fichier vide, fichier dodu qui n'est pas une image,
+fichier portant `IEND` sans signature, chunk final qui arrive en retard.
+
 ### Les tests ont ete vus echouer
 
-Un test qui n'a jamais rougi ne prouve rien. Cinq mutations ont ete injectees dans
-une copie de `build_banner.py` : opacites de repos inversees, image distante ajoutee,
-compteurs sans zero de tete, ecriture malgre l'echec d'API, garde-fou du zero depot
-retire. **Les cinq ont ete attrapees.** A refaire si la suite grossit, sinon rien ne
-dit qu'un nouveau test mord.
+Un test qui n'a jamais rougi ne prouve rien. Chaque garde a ete mutee dans une copie,
+puis la suite relancee.
+
+| Suite | Mutations injectees | Attrapees |
+|---|---|---|
+| `build_banner.py` | opacites de repos inversees, image distante, compteurs sans zero de tete, ecriture malgre l'echec d'API, garde-fou du zero depot retire | 5/5 |
+| scripts PowerShell | commit non scope, garde `python` retiree, publication sans `-Push`, chemin Edge bidon rendu, `IEND` non verifie, signature non verifiee, attente supprimee | 7/7 |
+
+Deux enseignements du passage, plus utiles que le score :
+
+- Un test qui verifie **le retour** peut etre aveugle quand la version cassee rend
+  la meme valeur pour une mauvaise raison. Sur un fichier vide, saine comme cassee
+  rendent `0` : seule la **duree** les separe.
+- La garde de taille minimale de `Test-PngComplet` est une **mutation equivalente** :
+  la retirer ne change aucun comportement observable, les deux comparaisons d'octets
+  la rendent redondante. Elle reste par defense en profondeur, pas par couverture.
+
+A refaire si la suite grossit, sinon rien ne dit qu'un nouveau test mord.
 
 ## Direction visuelle
 

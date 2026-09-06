@@ -22,22 +22,63 @@ param()
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath $PSScriptRoot
 
+function Test-PngComplet {
+    <#
+        Un PNG commence par une signature de 8 octets et se termine par le chunk
+        IEND. Tant que ces 16 octets ne sont pas tous la, le fichier est encore
+        en cours d'ecriture, quoi qu'en dise sa taille.
+
+        Ouverture en partage lecture ET ecriture : Edge tient encore le fichier.
+    #>
+    param([string]$Chemin)
+
+    $SIGNATURE = [byte[]](137, 80, 78, 71, 13, 10, 26, 10)
+    $FIN_IEND  = [byte[]](73, 69, 78, 68, 174, 66, 96, 130)
+
+    $flux = $null
+    try {
+        $flux = [System.IO.File]::Open($Chemin, [System.IO.FileMode]::Open,
+                                       [System.IO.FileAccess]::Read,
+                                       [System.IO.FileShare]::ReadWrite)
+        if ($flux.Length -lt ($SIGNATURE.Length + $FIN_IEND.Length)) { return $false }
+
+        $tampon = New-Object byte[] 8
+        if ($flux.Read($tampon, 0, 8) -ne 8) { return $false }
+        if (@(Compare-Object $tampon $SIGNATURE -SyncWindow 0).Count) { return $false }
+
+        [void]$flux.Seek(-8, [System.IO.SeekOrigin]::End)
+        if ($flux.Read($tampon, 0, 8) -ne 8) { return $false }
+        return -not @(Compare-Object $tampon $FIN_IEND -SyncWindow 0).Count
+    } catch {
+        return $false        # verrou, troncature, disparition : pas pret, on repasse
+    } finally {
+        if ($flux) { $flux.Dispose() }
+    }
+}
+
 function Wait-Fichier {
-    # Edge rend la main AVANT d'avoir vide son tampon sur le disque. Verifier
-    # l'existence dans la foulee est une course, et elle repond 'absent' sur un
-    # rendu parfaitement reussi. On attend que le fichier apparaisse, puis que sa
-    # taille cesse de bouger.
+    <#
+        Edge rend la main AVANT d'avoir vide son tampon sur le disque. Verifier
+        l'existence dans la foulee est une course, et elle repond 'absent' sur un
+        rendu parfaitement reussi.
+
+        On a d'abord attendu que la TAILLE cesse de bouger. Un test l'a refute le
+        2026-09-06 : deux lectures identiques ne prouvent pas la fin de l'ecriture,
+        seulement que rien n'a bouge pendant l'intervalle de scrutation. Sur un
+        fichier ecrit par morceaux, la fonction rendait 1 Ko sur 10. Un PNG
+        tronque, et personne pour le voir.
+
+        On lit donc la complétude DANS le fichier, ce qui ne depend d'aucun
+        chronometre. Rend la taille du PNG complet, ou 0 si le delai expire.
+    #>
     param([string]$Chemin, [int]$DelaiMax = 20)
 
     $fin = (Get-Date).AddSeconds($DelaiMax)
-    $precedente = -1
     while ((Get-Date) -lt $fin) {
-        if (Test-Path -LiteralPath $Chemin -PathType Leaf) {
-            $taille = (Get-Item -LiteralPath $Chemin).Length
-            if ($taille -gt 0 -and $taille -eq $precedente) { return $taille }
-            $precedente = $taille
+        if ((Test-Path -LiteralPath $Chemin -PathType Leaf) -and (Test-PngComplet $Chemin)) {
+            return (Get-Item -LiteralPath $Chemin).Length
         }
-        Start-Sleep -Milliseconds 250
+        Start-Sleep -Milliseconds 150
     }
     return 0
 }
