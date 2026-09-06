@@ -88,6 +88,29 @@ sur une grande image : GitHub affiche l'avatar a 20 px dans les listes de commit
 et les formes qui n'identifient plus rien a cette taille ont ete ecartees. Les
 variantes perdantes sont dans `_archive/2026-09-03_avatars-non-retenus/`.
 
+## Les tests
+
+```bash
+python -m pytest tests/
+```
+
+Sept tests, tous sur des promesses reelles plutot que sur la forme du dessin :
+les compteurs rendus sur deux chiffres, le SVG bien forme, **aucun attribut qui
+pointe hors du fichier** (camo sert la banniere avec `default-src 'none'`, un appel
+sortant y meurt sans bruit), le titre lisible quand rien ne s'anime, et surtout le
+refus d'ecrire quand l'API est muette.
+
+Ce dernier est le seul qui compte vraiment : c'est la promesse du depot entier.
+Elle n'etait tenue que par une verification a la main jusqu'au 2026-09-06.
+
+### Les tests ont ete vus echouer
+
+Un test qui n'a jamais rougi ne prouve rien. Cinq mutations ont ete injectees dans
+une copie de `build_banner.py` : opacites de repos inversees, image distante ajoutee,
+compteurs sans zero de tete, ecriture malgre l'echec d'API, garde-fou du zero depot
+retire. **Les cinq ont ete attrapees.** A refaire si la suite grossit, sinon rien ne
+dit qu'un nouveau test mord.
+
 ## Direction visuelle
 
 `bento-dense` (skill `esthetiques`) : fond sombre, Consolas, rayon 10, bordure
