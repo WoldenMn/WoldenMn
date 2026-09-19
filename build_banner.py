@@ -1,12 +1,13 @@
 """Genere assets/banner.svg : banniere du profil GitHub WoldenMn.
 
-Direction visuelle bento-dense (skill esthetiques) : fond sombre, Consolas,
-rayon 10, bordure discrete. Animation SMIL uniquement -- seule technique dont
-on a verifie empiriquement qu'elle survit au proxy camo de GitHub.
+Fond sombre, Consolas, rayon 10, bordure discrete. Animation SMIL (les
+animations CSS passeraient aussi). Chargee par <img> depuis le README, l'image
+ne charge aucune ressource externe, quelle que soit la CSP de
+raw.githubusercontent.com : c'est le mode image qui l'interdit.
 
 Les trois compteurs affiches sont DERIVES de l'API GitHub, jamais ecrits a la
-main : c'est leur gardien anti-derive. Sans donnees fraiches, le script echoue
-au lieu d'ecrire un chiffre perime.
+main. Sans donnees fraiches et plausibles, le script echoue au lieu d'ecrire un
+chiffre faux.
 
 Usage :
     python build_banner.py                 # interroge l'API via `gh`
@@ -39,7 +40,7 @@ def compte_depuis_api():
     try:
         out = subprocess.run(
             ["gh", "repo", "list", "WoldenMn", "--limit", "500", "--json", champs],
-            capture_output=True, text=True, encoding="utf-8", timeout=120,
+            capture_output=True, text=True, encoding="utf-8", timeout=120, check=False,
         )
     except FileNotFoundError as e:
         raise RuntimeError("gh introuvable : impossible de rafraichir les compteurs") from e
@@ -48,32 +49,43 @@ def compte_depuis_api():
     depots = json.loads(out.stdout)
     if not depots:
         raise RuntimeError("l'API a renvoye 0 depot : refus d'ecrire des compteurs vides")
+    publics = sum(1 for d in depots if not d["isPrivate"])
+    # Un jeton qui ne voit que le public (le GITHUB_TOKEN d'Actions, par
+    # exemple) rendrait un compte partiel sans la moindre erreur. Tant que la
+    # plupart des depots restent prives, « tout est public » veut dire « le
+    # jeton ne voit pas le reste ».
+    if publics == len(depots):
+        raise RuntimeError(f"les {len(depots)} depots vus sont tous publics : le jeton ne voit "
+                           "sans doute pas les prives, refus d'ecrire un compte partiel")
     langues = {(d.get("primaryLanguage") or {}).get("name") for d in depots}
     langues.discard(None)
-    return len(depots), sum(1 for d in depots if not d["isPrivate"]), len(langues)
+    return len(depots), publics, len(langues)
 
 
-def anim(attr, values, key_times):
+def anim_une_fois(attr, values, key_times):
+    """Joue une seule fois puis fige la derniere valeur."""
     return (f'<animate attributeName="{attr}" values="{values}" keyTimes="{key_times}" '
-            f'dur="{CYCLE}s" repeatCount="indefinite" calcMode="discrete"/>')
+            f'dur="{CYCLE}s" calcMode="discrete" fill="freeze"/>')
 
 
 def decode():
-    """Chaque lettre bascule du glyphe brouille au vrai caractere, en cascade."""
+    """Chaque lettre bascule du glyphe brouille au vrai caractere, en cascade,
+    une seule fois au chargement de l'image. La version qui bouclait laissait
+    le titre illisible 40 % du temps."""
     out = []
     for i, ch in enumerate(TITRE):
         x = X0 + i * PAS + PAS / 2
         bascule = 0.06 + i * 0.035
-        kt = f"0;{bascule:.4f};0.9000;1"
+        kt = f"0;{bascule:.4f}"
         commun = (f'x="{x:.1f}" y="{Y_TITRE}" text-anchor="middle" '
                   f'font-family="{MONO}" font-size="44" font-weight="700"')
-        # Les attributs opacity portent l'etat de REPOS (titre lisible) ; les
-        # animations SMIL les surchargent tant qu'elles tournent. Un moteur qui
+        # Les attributs opacity portent l'etat de REPOS (titre lisible), et la
+        # derniere valeur figee de chaque animation le retrouve. Un moteur qui
         # n'anime pas affiche donc WOLDENMN, jamais le brouillage fige.
         out.append(f'<text {commun} fill="{TEXTE_2}" opacity="0">'
-                   f'{BROUILLAGE[i % len(BROUILLAGE)]}{anim("opacity", "1;0;1;1", kt)}</text>')
+                   f'{BROUILLAGE[i % len(BROUILLAGE)]}{anim_une_fois("opacity", "1;0", kt)}</text>')
         out.append(f'<text {commun} fill="{TEXTE}" opacity="1">{ch}'
-                   f'{anim("opacity", "0;1;0;0", kt)}</text>')
+                   f'{anim_une_fois("opacity", "0;1", kt)}</text>')
     return "\n  ".join(out)
 
 
@@ -99,8 +111,11 @@ def stat(x, label, valeur):
 
 
 def svg(total, publics, langues):
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="WoldenMn. {total} depots, {publics} visible publiquement, {langues} langages. TypeScript, Python, Rust, dotNET, PowerShell.">
-  <title>WoldenMn &#8212; {total} depots, {publics} visible</title>
+    # Accents en entites numeriques : le rendu ne depend plus de l'encodage
+    # annonce par le serveur qui sert l'image.
+    visibles = "visible" if publics <= 1 else "visibles"
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="WoldenMn. {total} d&#233;p&#244;ts, dont {publics} {visibles} publiquement, {langues} langages. TypeScript, Python, Rust, .NET, PowerShell.">
+  <title>WoldenMn &#8212; {total} d&#233;p&#244;ts, {publics} {visibles}</title>
   <defs>
     <linearGradient id="scan" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="{OK}" stop-opacity="0"/>
@@ -127,12 +142,12 @@ def svg(total, publics, langues):
   <text x="{X0}" y="152" font-family="{MONO}" font-size="13" fill="{TEXTE_2}">{TAGLINE}</text>
 
   <rect x="{X0 - 14}" y="176" width="{W - 2 * (X0 - 14)}" height="1" fill="{BORD}"/>
-  {stat(X0, "DEPOTS", f"{total:02d}")}
+  {stat(X0, "D&#201;P&#212;TS", f"{total:02d}")}
   {stat(X0 + 150, "VISIBLES", f"{publics:02d}")}
   {stat(X0 + 300, "LANGAGES", f"{langues:02d}")}
 
   <text x="{W - 56}" y="196" text-anchor="end" font-family="{MONO}" font-size="10" fill="{TEXTE_2}" letter-spacing="1.6">{RAIL}</text>
-  <text x="{W - 56}" y="217" text-anchor="end" font-family="{MONO}" font-size="12" fill="{TEXTE_2}">le reste est prive</text>
+  <text x="{W - 56}" y="217" text-anchor="end" font-family="{MONO}" font-size="12" fill="{TEXTE_2}">le reste est priv&#233;</text>
   <circle cx="{W - 40}" cy="212" r="4" fill="{OK}">
     <animate attributeName="opacity" values="1;1;0.15;1;1" keyTimes="0;0.45;0.5;0.55;1" dur="2.6s" repeatCount="indefinite"/>
   </circle>

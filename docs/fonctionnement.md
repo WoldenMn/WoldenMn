@@ -1,106 +1,153 @@
-# Comment ce depot fonctionne
+# Comment ce dépôt fonctionne
 
-Depot special GitHub : un depot **public** nomme exactement comme le compte
-(`WoldenMn/WoldenMn`) voit son `README.md` affiche en haut de la page de profil.
+Dépôt spécial de GitHub : un dépôt **public** nommé exactement comme le compte
+(`WoldenMn/WoldenMn`) voit son `README.md` affiché en haut de la page de profil.
 
-## La banniere
+## La bannière
 
-`assets/banner.svg` n'est jamais edite a la main. Il est genere par
-`build_banner.py`, qui lit les compteurs depuis l'API GitHub via `gh`.
+`assets/banner.svg` n'est jamais édité à la main. Il est généré par
+`build_banner.py`, qui relève les compteurs sur l'API GitHub via `gh`.
 
 ```bash
-python build_banner.py                 # interroge l'API
+python build_banner.py                                   # interroge l'API
 python build_banner.py --offline TOTAL PUBLICS LANGAGES  # valeurs explicites, pour tester
 ```
 
-Si l'API est injoignable, le script **echoue et n'ecrit rien** : mieux vaut une
-banniere perimee qu'une banniere fausse.
+Le script **échoue et n'écrit rien** dans trois cas : l'API est injoignable, elle
+renvoie zéro dépôt, ou tous les dépôts vus sont publics. Le troisième trahit un
+jeton qui ne voit pas les dépôts privés, le `GITHUB_TOKEN` d'Actions par exemple :
+il rendrait un compte partiel sans la moindre erreur. Mieux vaut une bannière
+périmée qu'une bannière fausse.
 
-## Pourquoi SMIL et pas des animations CSS
+Deux angles morts, assumés :
 
-GitHub sert les images des README a travers son proxy `camo`, qui renvoie la CSP
-`default-src 'none'; img-src data:; style-src 'unsafe-inline'`. Verifie le
-2026-08-22 en recuperant un SVG anime reellement servi par camo :
+- une visibilité **partielle** passe : un jeton qui verrait trois dépôts privés sur
+  cinquante rendrait un compte faux mais plausible ;
+- le jour où tout serait public, le script refuserait d'écrire. L'échec est
+  bruyant, et acceptable tant que l'atelier reste fermé.
 
-- les balises SMIL `<animate>` passent intactes ;
-- les blocs `<style>` passent (`style-src 'unsafe-inline'`) ;
-- **aucune police externe ne se charge** (`default-src 'none'`), d'ou les
-  familles generiques `Consolas / monospace`.
+Le rail « TS · PYTHON · RUST · DOTNET · PWSH » n'est pas un compteur : c'est la
+pile revendiquée, écrite à la main et assumée comme telle. Le « 09 LANGAGES » à
+côté, lui, est dérivé : le nombre de langages principaux distincts.
 
-Les attributs `opacity` portent l'etat de **repos** (titre lisible), et les
-animations les surchargent tant qu'elles tournent. Un moteur qui n'anime pas
-affiche donc `WOLDENMN`, jamais le brouillage fige.
+## Ce que le rendu permet
 
-## Le rafraichissement, a la demande
+Une image relative du README (`./assets/banner.svg`) est réécrite par GitHub en
+`/raw/`, puis redirigée vers `raw.githubusercontent.com`, qui l'envoie avec la CSP
+`default-src 'none'; style-src 'unsafe-inline'; sandbox` et un
+`Cache-Control: max-age=300` (mesuré le 2026-09-18).
+
+Mais c'est la balise `<img>` qui fixe les règles. Un SVG chargé comme image ne
+charge **aucune ressource externe**, quelle que soit la CSP, sauf ce qui est
+intégré en URI `data:`
+([MDN, « SVG as an image »](https://developer.mozilla.org/en-US/docs/Web/SVG/Guides/SVG_as_an_image)).
+La CSP ne joue qu'à l'ouverture directe du fichier. Ce qui en découle :
+
+- les animations passent, SMIL comme CSS (vérifié sous Edge 153) ; la bannière
+  n'utilise que SMIL ;
+- aucune police externe : Consolas en local, avec repli `monospace` ;
+- après un push, la bannière peut mettre quelques minutes à changer, jusqu'à dix
+  environ : `max-age=300` au CDN, puis autant dans le navigateur d'un visiteur qui
+  avait déjà l'image.
+
+Deux versions précédentes de cette doc se sont trompées de cause : l'une
+accusait le proxy `camo`, qui ne concerne que les images en URL absolue, l'autre
+la CSP. Les conclusions tenaient, les explications non.
+
+Les accents du texte visible sont écrits en entités numériques (`&#233;`) : le
+rendu ne dépend pas de l'encodage annoncé par le serveur.
+
+### Le titre se décode une fois
+
+Au chargement de l'image, chaque lettre de `WOLDENMN` bascule d'un glyphe brouillé
+vers le vrai caractère, en cascade, puis se fige. La première version rejouait ce
+décodage toutes les 9 secondes : le titre était illisible 40 % du temps, et
+entièrement brouillé 16 % du temps (mesuré le 2026-09-18). Le balayage vert et le
+point clignotant gardent leur boucle.
+
+Les attributs `opacity` portent l'état de **repos** (titre lisible), et la valeur
+figée de chaque animation le retrouve. Un moteur qui n'anime pas affiche donc
+`WOLDENMN`, jamais le brouillage.
+
+Un piège pour qui voudrait le vérifier : Edge headless, avec
+`--virtual-time-budget`, n'avance presque pas le temps d'un SVG chargé par
+`<img>`. Il faut insérer le SVG dans la page pour que la capture tombe au bon
+instant.
+
+## Le rafraîchissement, à la demande
 
 ```powershell
-.\rafraichir.ps1        # regenere et montre ce qui a bouge
-.\rafraichir.ps1 -Push  # regenere, commite et publie
+.\rafraichir.ps1        # régénère et montre ce qui a bougé
+.\rafraichir.ps1 -Push  # régénère, commite et publie
 ```
 
-Le script s'arrete si `build_banner.py` echoue, et la banniere reste alors
-intacte plutot que de porter un chiffre faux. Verifie le 2026-09-03 dans les
-deux sens : compteurs a jour quand l'API repond, aucune ecriture quand `gh` est
-hors d'atteinte.
+Depuis PowerShell 7. Sous Windows PowerShell 5.1, dont la stratégie d'exécution
+est souvent `Restricted`, passer par
+`powershell -NoProfile -ExecutionPolicy Bypass -File .\rafraichir.ps1`.
+
+Le script s'arrête si `build_banner.py` échoue, et la bannière reste alors
+intacte. Sans `-Push`, il ne commite ni ne pousse rien. Avec, il commite **le
+seul** `assets/banner.svg` : un `git commit` sans chemin publierait tout ce qui
+traîne dans l'index, sous un message qui ne le mentionne pas.
 
 ### Pourquoi plus de GitHub Actions
 
-Un workflow hebdomadaire tournait ici jusqu'au 2026-09-03. Il exigeait un secret
-`PROFILE_STATS_TOKEN`, parce que le `GITHUB_TOKEN` d'Actions ne voit que ce
-depot-ci et aurait compte deux depots au lieu de cinquante. Le secret n'a jamais
-ete pose : le workflow a echoue a chaque passage, deux lundis de suite, en
-laissant des croix rouges sur un depot dont le seul role est de bien paraitre.
+Un workflow hebdomadaire tournait ici jusqu'au 2026-09-03. Il exigeait un secret,
+parce que le `GITHUB_TOKEN` d'Actions ne voit que ce dépôt-ci. Le secret n'a
+jamais été posé : le workflow a échoué à chaque passage, deux lundis de suite.
 
-Le choix retenu est d'assumer la relance manuelle plutot que de deposer un jeton
-a portee large dans un depot public. L'ancien workflow reste dans
-`_archive/2026-09-03_workflow-vers-script-local/` si le compromis change.
+La relance manuelle l'a remplacé, par choix du propriétaire : relancer à la main
+plutôt que déposer un jeton à portée large dans un dépôt public, quitte à laisser
+le chiffre dériver entre deux lancements. Le 2026-09-18, la bannière affichait
+50 dépôts pour 54, faute de relance depuis le 2026-09-03.
 
 ## Les deux autres assets
 
-| Fichier | Sert a | Ou il se televerse |
+| Fichier | Sert à | Où il se téléverse |
 |---|---|---|
 | `assets/avatar.svg` | photo de profil du compte | Settings > Profile Picture > Edit > Upload a photo |
-| `assets/social-preview.svg` | vignette quand on partage le lien du depot | Settings du depot > Social preview > Edit |
+| `assets/social-preview.svg` | vignette quand on partage le lien du dépôt | Settings du dépôt > Social preview > Edit |
 
-GitHub n'accepte que du PNG, du JPG ou du GIF a l'upload, d'ou :
+GitHub n'accepte que du PNG, du JPG ou du GIF à l'upload, d'où :
 
 ```powershell
 .\exporter_png.ps1
 ```
 
-Il ecrit `export/avatar.png` (920x920) et `export/social-preview.png` (1280x640),
-hors du depot puisque ce sont des derives. Le binaire Edge y est **cherche**, jamais
-suppose : son chemin porte un numero de version qui change a chaque mise a jour.
+Il écrit `export/avatar.png` (920 × 920) et `export/social-preview.png`
+(1280 × 640), hors du dépôt puisque ce sont des dérivés. Le binaire Edge y est
+**cherché**, jamais supposé : son chemin porte un numéro de version qui change à
+chaque mise à jour.
 
-### Le piege du rendu, paye deux fois
+### Le piège du rendu, payé deux fois
 
-Edge rend la main **avant** d'avoir vide son tampon sur le disque. Verifier
-l'existence du PNG dans la foulee est une course, et elle repond « absent » sur un
-rendu parfaitement reussi : le fichier arrive une fraction de seconde plus tard.
-Sans attente, le script echoue au hasard sur des rendus corrects, et fait accuser
-Edge a sa place.
+Edge rend la main **avant** d'avoir vidé son tampon sur le disque. Vérifier
+l'existence du PNG dans la foulée est une course, et elle répond « absent » sur un
+rendu parfaitement réussi : le fichier arrive une fraction de seconde plus tard.
+Sans attente, le script échoue au hasard sur des rendus corrects, et fait accuser
+Edge à sa place.
 
-La premiere correction attendait que la **taille** cesse de bouger. Elle a tenu
-trois jours. Le 2026-09-06, un test l'a refutee : sur un fichier ecrit par
+La première correction attendait que la **taille** cesse de bouger. Elle a tenu
+moins de deux jours, du 2026-09-04 au 2026-09-06. Un test l'a réfutée : sur un fichier écrit par
 morceaux, `Wait-Fichier` rendait 1 Ko sur 10. Deux lectures identiques ne prouvent
-pas la fin de l'ecriture, seulement que rien n'a bouge pendant l'intervalle de
-scrutation. Un PNG tronque serait passe pour bon, et personne ne l'aurait vu.
+pas la fin de l'écriture, seulement que rien n'a bougé pendant l'intervalle de
+scrutation. Un PNG tronqué serait passé pour bon.
 
-La complétude se lit desormais **dans le fichier** : signature de 8 octets en tete,
-chunk `IEND` en queue. Aucun chronometre, donc rien a regler et rien qui depende de
-la vitesse du disque. `Test-PngComplet` ouvre en partage lecture-ecriture, puisque
-Edge tient encore le fichier.
+La complétude se lit désormais **dans le fichier** : signature de 8 octets en
+tête, chunk `IEND` en queue. Aucun chronomètre, donc rien à régler et rien qui
+dépende de la vitesse du disque. `Test-PngComplet` ouvre en partage
+lecture-écriture, puisque Edge tient encore le fichier.
 
-> Lecon generale : quand une garde repose sur « ca n'a pas bouge depuis un moment »,
-> c'est une heuristique deguisee en preuve. Si le format porte sa propre marque de
-> fin, la lire coute moins cher et ne ment pas.
+> Quand une garde repose sur « ça n'a pas bougé depuis un moment », c'est une
+> heuristique déguisée en preuve. Si le format porte sa propre marque de fin, la
+> lire coûte moins cher et ne ment pas.
 
-### Pourquoi cet avatar-la
+### Pourquoi cet avatar-là
 
-Le choix s'est fait sur une planche de rendu **circulaire** a 180/72/40/20 px, pas
-sur une grande image : GitHub affiche l'avatar a 20 px dans les listes de commits,
-et les formes qui n'identifient plus rien a cette taille ont ete ecartees. Les
-variantes perdantes sont dans `_archive/2026-09-03_avatars-non-retenus/`.
+Le choix s'est fait sur une planche de rendu **circulaire** à 180, 72, 40 et
+20 px, pas sur une grande image : GitHub affiche l'avatar à 20 px dans les listes
+de commits, et les formes qui n'identifient plus rien à cette taille ont été
+écartées.
 
 ## Les tests
 
@@ -109,52 +156,75 @@ python -m pytest tests/
 ```
 
 ```powershell
-powershell -NoProfile -Command "Invoke-Pester .\tests\Scripts.Tests.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Module Pester -MinimumVersion 5.0.0; Invoke-Pester .\tests\Scripts.Tests.ps1"
 ```
 
-Deux suites : 7 tests Python sur `build_banner.py`, 12 tests Pester sur les deux
-scripts PowerShell. Pester 5 vit dans les modules de **Windows PowerShell 5.1** sur
-ce poste, pas dans ceux de pwsh 7 — d'ou l'appel par `powershell`, sans quoi c'est
-la 3.4 livree avec Windows qui repond et la syntaxe ne passe pas.
+11 tests Python sur `build_banner.py`, 16 tests Pester sur les deux scripts
+PowerShell. Pester 5 est requis. S'il n'est installé que pour Windows PowerShell
+5.1 et que la stratégie d'exécution est `Restricted`, le module ne se charge pas
+sans `-ExecutionPolicy Bypass`, dont la portée se limite à ce processus.
 
-Cote Python, sept tests sur des promesses reelles plutot que sur la forme du dessin :
-les compteurs rendus sur deux chiffres, le SVG bien forme, **aucun attribut qui
-pointe hors du fichier** (camo sert la banniere avec `default-src 'none'`, un appel
-sortant y meurt sans bruit), le titre lisible quand rien ne s'anime, et surtout le
-refus d'ecrire quand l'API est muette.
+Côté Python, les tests gardent ce que le dépôt promet plutôt que la forme du
+dessin : le refus d'écrire quand l'API est muette, renvoie zéro dépôt ou ne voit
+que du public ; le calcul des trois compteurs sur une sortie réaliste de `gh`, où
+chaque erreur plausible donne un autre triplet ; le titre décodé une seule fois et
+lisible au repos ; aucune référence qui sorte du fichier, ni en attribut ni en
+`url()` de style ; les compteurs sur deux chiffres ; l'accord de « visible ».
 
-Ce dernier est le seul qui compte vraiment : c'est la promesse du depot entier.
-Elle n'etait tenue que par une verification a la main jusqu'au 2026-09-06.
+Côté PowerShell, `rafraichir.ps1` est **exécuté** sous des mocks de `git` et de
+`python` qui enregistrent chaque appel : rien ne part sans `-Push` ; avec, un seul
+commit limité à `assets/banner.svg`, puis un push simple, jamais forcé ; rien non
+plus quand les compteurs n'ont pas bougé ou que `build_banner.py` échoue. Un
+commit qui échoue arrête tout avant le push, et un push qui échoue lève une
+erreur au lieu d'annoncer la bannière publiée. Pour
+`exporter_png.ps1` : la recherche d'Edge, et la complétude du PNG face à un
+fichier vide, un fichier dodu qui n'est pas une image, un `IEND` sans signature et
+un chunk final qui arrive en retard.
 
-Cote PowerShell, les tests gardent le commit scope de `rafraichir.ps1` (un `git
-commit` sans pathspec publierait tout l'index sous un message qui ne le mentionne
-pas, c'est arrive), le refus de publier sans `-Push`, la recherche du binaire Edge,
-et la complétude du PNG : fichier vide, fichier dodu qui n'est pas une image,
-fichier portant `IEND` sans signature, chunk final qui arrive en retard.
+### Les tests ont été vus échouer
 
-### Les tests ont ete vus echouer
+```bash
+python tests/mutations.py
+```
 
-Un test qui n'a jamais rougi ne prouve rien. Chaque garde a ete mutee dans une copie,
-puis la suite relancee.
+Un test qui n'a jamais rougi ne prouve rien. `tests/mutations.py` casse chaque
+garde à son tour dans une copie du dépôt, relance la suite, et vérifie qu'elle
+rougit. Deux témoins encadrent la passe : le code sain doit rester vert, et un
+test cassé exprès doit rougir. Sans le second, un outil qui ne voit rien répond
+« vert » à tout. Chaque mutation nomme aussi le test censé la prendre : si c'est
+un autre test qui rougit, elle compte comme un trou de la suite, pas comme une
+prise.
 
-| Suite | Mutations injectees | Attrapees |
+| Suite | Mutations injectées | Attrapées |
 |---|---|---|
-| `build_banner.py` | opacites de repos inversees, image distante, compteurs sans zero de tete, ecriture malgre l'echec d'API, garde-fou du zero depot retire | 5/5 |
-| scripts PowerShell | commit non scope, garde `python` retiree, publication sans `-Push`, chemin Edge bidon rendu, `IEND` non verifie, signature non verifiee, attente supprimee | 7/7 |
+| `build_banner.py` | publics inversés, langage absent compté, total confondu avec les publics, langages confondus avec le total, garde « tout public » retirée, garde « zéro dépôt » retirée, écriture malgré l'échec d'API, titre qui boucle à nouveau, `freeze` retiré, glyphe qui finit visible, décodage tardif, cycle ralenti, opacités de repos inversées, image distante, image relative, `url()` externe dans un style, compteur sans zéro de tête, accord de « visible » faux | 18/18 |
+| scripts PowerShell | `exit 0` retiré du bloc sans `-Push`, commit sans chemin, push forcé, échec de `git commit` ignoré, échec de `git push` ignoré, garde `python` neutralisée, contrôle des compteurs inchangés retiré, échec de `build_banner.py` ignoré, chemin Edge inexistant rendu, `IEND` non vérifié, signature non vérifiée, attente supprimée | 12/12 |
 
-Deux enseignements du passage, plus utiles que le score :
+Ce que les passes successives ont appris, plus utile que le score :
 
-- Un test qui verifie **le retour** peut etre aveugle quand la version cassee rend
-  la meme valeur pour une mauvaise raison. Sur un fichier vide, saine comme cassee
-  rendent `0` : seule la **duree** les separe.
-- La garde de taille minimale de `Test-PngComplet` est une **mutation equivalente** :
-  la retirer ne change aucun comportement observable, les deux comparaisons d'octets
-  la rendent redondante. Elle reste par defense en profondeur, pas par couverture.
+- La première version des tests PowerShell cherchait du **texte** dans le script.
+  Une contre-expertise a retiré le `exit 0` du bloc sans `-Push` : le script
+  enchaînait alors commit et push, et la suite restait verte. Un test qui lit la
+  source ne teste pas le comportement.
+- Les cinq premières mutations Python ne touchaient pas au **calcul** des
+  compteurs : quatre erreurs de calcul passaient. La panne décrite plus haut, un
+  jeton qui ne voit que le public, n'en fait pas partie : c'est une erreur de
+  données, que seule la garde « tout public » attrape.
+- La première passe PowerShell a rendu 0 sur 9 : Pester ne se chargeait pas, la
+  sortie était vide, et l'outil lisait ce vide comme du vert. D'où le témoin
+  connu-mauvais, et d'où l'exigence qu'un motif de mutation apparaisse exactement
+  une fois : une mutation posée sur la mauvaise ligne passe pour un test aveugle.
+- Un test qui vérifie **le retour** peut être aveugle quand la version cassée rend
+  la même valeur pour une mauvaise raison. Sur un fichier vide, saine comme cassée
+  rendent `0` : seule la **durée** les sépare.
+- La garde de taille minimale de `Test-PngComplet` est une **mutation
+  équivalente** : la retirer ne change aucun comportement observable, les deux
+  comparaisons d'octets la couvrent. Elle reste par défense en profondeur.
 
-A refaire si la suite grossit, sinon rien ne dit qu'un nouveau test mord.
+À relancer dès que la suite grossit : rien d'autre ne dit qu'un nouveau test mord.
 
 ## Direction visuelle
 
-`bento-dense` (skill `esthetiques`) : fond sombre, Consolas, rayon 10, bordure
-discrete. Un seul interdit de la fiche est leve, l'animation permanente, a la
-demande explicite du proprietaire.
+Fond charbon `#12141a`, accent vert `#3ecf8e`, Consolas, rayon 10, bordure
+discrète, grille dense. Deux animations tournent en permanence, lentes : le
+balayage et le point.

@@ -6,8 +6,9 @@
     qu'on n'ait verifie, et ne pas confondre « pas encore ecrit » avec « rate ».
     Chacune a deja ete enfreinte une fois.
 
-    Lancer (Pester 5 vit sous Windows PowerShell 5.1 sur ce poste) :
-        powershell -NoProfile -Command "Invoke-Pester .\tests\Scripts.Tests.ps1"
+    Lancer (Pester 5 sous Windows PowerShell 5.1, dont la strategie
+    d'execution est souvent Restricted) :
+        powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Module Pester -MinimumVersion 5.0.0; Invoke-Pester .\tests\Scripts.Tests.ps1"
 #>
 
 BeforeAll {
@@ -43,30 +44,81 @@ BeforeAll {
     }
 }
 
-Describe 'rafraichir.ps1' {
+Describe 'rafraichir.ps1, execute sous mocks' {
+    # La premiere version de ces tests cherchait du texte dans le script. Une
+    # contre-expertise du 2026-09-18 a retire le `exit 0` du bloc sans -Push :
+    # le script enchainait alors commit et push, et les tests restaient verts.
+    # Ils executent donc le script, avec git et python remplaces par des mocks
+    # qui enregistrent chaque appel.
 
-    BeforeAll { $script:Source = Get-Content (Join-Path $script:Racine 'rafraichir.ps1') -Raw }
+    BeforeAll { $script:Rafraichir = Join-Path $script:Racine 'rafraichir.ps1' }
 
-    It 'scope son commit au seul banner.svg' {
-        # Regression : un `git commit` sans pathspec publie tout l'index sous un
-        # message qui ne le mentionne pas. C'etait le cas, et deux suppressions de
-        # workflow seraient parties en douce sous un « refresh counters ».
-        $commit = $script:Source -split "`n" | Where-Object { $_ -match '^\s*git commit' }
-
-        $commit | Should -Not -BeNullOrEmpty
-        foreach ($ligne in $commit) {
-            $ligne | Should -Match '--\s+assets/banner\.svg' -Because 'un commit nu emporterait tout l''index'
+    BeforeEach {
+        Mock python { $global:LASTEXITCODE = 0 }
+        Mock git {
+            $global:LASTEXITCODE = 0
+            if ($args[0] -eq 'status') { ' M assets/banner.svg' }
         }
+        Mock Write-Host {}
     }
 
-    It 'refuse de partir si python est absent' {
-        $script:Source | Should -Match 'Get-Command python'
-        $script:Source | Should -Match 'throw'
+    It 'sans -Push, ne commite ni ne pousse rien' {
+        Push-Location
+        try { & $script:Rafraichir } finally { Pop-Location }
+        Should -Invoke git -Exactly -Times 0 -ParameterFilter { $args -contains 'push' }
+        Should -Invoke git -Exactly -Times 0 -ParameterFilter { $args -contains 'commit' }
     }
 
-    It 'ne publie jamais sans le commutateur -Push' {
-        $script:Source | Should -Match '\$Push'
-        $script:Source | Should -Match 'if \(-not \$Push\)'
+    It 'avec -Push, un seul commit, scope au seul banner.svg, puis un push' {
+        # Un commit sans pathspec publie tout l'index sous un message qui ne le
+        # mentionne pas : deux suppressions de workflow sont presque parties ainsi.
+        Push-Location
+        try { & $script:Rafraichir -Push } finally { Pop-Location }
+        Should -Invoke git -Exactly -Times 1 -ParameterFilter { $args[0] -eq 'commit' -and $args[-1] -eq 'assets/banner.svg' }
+        Should -Invoke git -Exactly -Times 0 -ParameterFilter { $args[0] -eq 'commit' -and $args[-1] -ne 'assets/banner.svg' }
+        Should -Invoke git -Exactly -Times 1 -ParameterFilter { $args[0] -eq 'push' -and $args.Count -eq 1 }
+        Should -Invoke git -Exactly -Times 0 -ParameterFilter { $args[0] -eq 'push' -and $args.Count -gt 1 }
+    }
+
+    It 'leve et ne pousse rien quand git commit echoue' {
+        Mock git {
+            $global:LASTEXITCODE = if ($args[0] -eq 'commit') { 1 } else { 0 }
+            if ($args[0] -eq 'status') { ' M assets/banner.svg' }
+        }
+        Push-Location
+        try { { & $script:Rafraichir -Push } | Should -Throw -ExpectedMessage '*git commit a echoue*' } finally { Pop-Location }
+        Should -Invoke git -Exactly -Times 0 -ParameterFilter { $args[0] -eq 'push' }
+    }
+
+    It 'leve quand git push echoue, au lieu d''annoncer la banniere publiee' {
+        Mock git {
+            $global:LASTEXITCODE = if ($args[0] -eq 'push') { 1 } else { 0 }
+            if ($args[0] -eq 'status') { ' M assets/banner.svg' }
+        }
+        Push-Location
+        try { { & $script:Rafraichir -Push } | Should -Throw -ExpectedMessage '*git push a echoue*' } finally { Pop-Location }
+    }
+
+    It 'ne publie rien quand les compteurs n''ont pas bouge' {
+        Mock git { $global:LASTEXITCODE = 0 }
+        Push-Location
+        try { & $script:Rafraichir -Push } finally { Pop-Location }
+        Should -Invoke git -Exactly -Times 0 -ParameterFilter { $args[0] -eq 'commit' }
+        Should -Invoke git -Exactly -Times 0 -ParameterFilter { $args[0] -eq 'push' }
+    }
+
+    It 'ne publie rien quand build_banner.py echoue' {
+        Mock python { $global:LASTEXITCODE = 1 }
+        Push-Location
+        try { { & $script:Rafraichir -Push } | Should -Throw -ExpectedMessage '*build_banner.py a echoue*' } finally { Pop-Location }
+        Should -Invoke git -Exactly -Times 0 -ParameterFilter { $args[0] -in 'commit', 'push' }
+    }
+
+    It 'leve si python est introuvable, sans rien lancer' {
+        Mock Get-Command { $null } -ParameterFilter { $Name -eq 'python' }
+        Push-Location
+        try { { & $script:Rafraichir } | Should -Throw -ExpectedMessage '*python introuvable*' } finally { Pop-Location }
+        Should -Invoke python -Exactly -Times 0
     }
 }
 
