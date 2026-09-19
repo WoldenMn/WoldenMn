@@ -1,10 +1,14 @@
 """Garde les promesses de build_banner.py.
 
-Le coeur de ce depot n'est pas de dessiner joli : c'est qu'un compteur affiche
-soit un chiffre vrai, soit rien. Et que la banniere reste lisible chez un moteur
-qui n'anime pas. Ces deux promesses etaient tenues a la main jusqu'ici.
+Le coeur de ce depot n'est pas de dessiner joli : c'est que le script ecrive
+des compteurs releves sur l'API, ou n'ecrive rien. La banniere peut alors rester
+perimee, et un jeton a visibilite partielle passe (voir docs/fonctionnement.md).
+Et que la banniere reste lisible chez un moteur qui n'anime pas. Ces deux
+promesses etaient tenues a la main jusqu'ici.
 """
 
+import json
+import re
 import sys
 from pathlib import Path
 from xml.etree import ElementTree
@@ -14,7 +18,7 @@ import pytest
 RACINE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RACINE))
 
-import build_banner  # noqa: E402
+import build_banner
 
 
 def elements(doc, balise=None):
@@ -40,7 +44,9 @@ def test_svg_bien_forme():
 
 
 def test_aucune_ressource_chargee_depuis_le_reseau():
-    """Camo sert la banniere avec `default-src 'none'` : tout appel sortant meurt.
+    """Chargee par <img> depuis le README, la banniere ne demande aucune
+    ressource externe (le navigateur n'emet pas la requete) : tout appel sortant
+    y meurt sans bruit.
 
     On ne cherche pas la chaine "http" betement : `xmlns` est un namespace XML,
     que personne ne va chercher sur le reseau, et `url(#scan)` pointe un degrade
@@ -54,6 +60,10 @@ def test_aucune_ressource_chargee_depuis_le_reseau():
         for nom, valeur in el.attrib.items():
             assert "//" not in valeur, (
                 f"<{el.tag} {nom}> pointe hors du fichier : {valeur}")
+            if nom.rsplit("}", 1)[-1] == "href":
+                assert valeur.startswith("#"), f"<{el.tag} {nom}> pointe hors du fichier : {valeur}"
+    for style in elements(doc, "style"):
+        assert not re.search(r"url\((?!#)", style.text or ""), "url() externe dans un <style>"
 
 
 def test_titre_lisible_quand_rien_ne_s_anime():
@@ -75,6 +85,70 @@ def test_titre_lisible_quand_rien_ne_s_anime():
         f"un glyphe de brouillage est visible au repos : {set(au_repos) - lettres}")
     assert "".join(au_repos) == build_banner.TITRE, (
         f"titre au repos = {''.join(au_repos)!r}, attendu {build_banner.TITRE!r}")
+
+
+def test_titre_decode_une_seule_fois_puis_reste_lisible():
+    """La version qui bouclait re-brouillait le titre toutes les 9 s : illisible
+    40 % du temps, mesure le 2026-09-18. Chaque animation du titre joue une fois,
+    puis fige une derniere valeur egale a l'etat de repos."""
+    noeuds = titre_et_glyphes(build_banner.svg(50, 2, 9))
+    assert noeuds
+    for noeud in noeuds:
+        anims = [a for a in noeud if a.tag.rsplit("}", 1)[-1] == "animate"]
+        assert anims, "chaque glyphe du titre doit etre anime"
+        for a in anims:
+            assert a.get("repeatCount") is None, "le titre ne doit plus boucler"
+            assert a.get("fill") == "freeze", "sans freeze, l'etat final se perd"
+            valeurs, instants, duree = a.get("values"), a.get("keyTimes"), a.get("dur")
+            assert valeurs and instants and duree, "animation incomplete"
+            finale = valeurs.split(";")[-1]
+            assert finale == noeud.get("opacity"), (
+                f"{noeud.text!r} finit a {finale}, son repos est {noeud.get('opacity')}")
+            # Le decodage doit se voir a l'arrivee : un titre qui ne se revele
+            # qu'au bout de 9 s est illisible pour qui passe vite.
+            bascule = float(instants.split(";")[-1]) * float(duree.rstrip("s"))
+            assert bascule < 3.0, f"{noeud.text!r} se decode a {bascule:.2f} s"
+
+
+def test_accord_de_visible():
+    assert "1 visible " in build_banner.svg(50, 1, 9)
+    assert "2 visibles " in build_banner.svg(50, 2, 9)
+
+
+class SortieGh:
+    returncode = 0
+    stderr = ""
+
+    def __init__(self, depots):
+        self.stdout = json.dumps(depots)
+
+
+def test_compteurs_calcules_sur_une_sortie_realiste(monkeypatch):
+    """La forme reelle de gh : un depot sans langage porte primaryLanguage null.
+
+    Les valeurs attendues sont toutes distinctes (4, 1, 2) : inverser prives et
+    publics, compter le langage absent, confondre total et publics, ou compter
+    les langages avec leurs doublons donnent chacun un autre triplet.
+    """
+    depots = [
+        {"name": "a", "isPrivate": True, "primaryLanguage": {"name": "Rust"}},
+        {"name": "b", "isPrivate": True, "primaryLanguage": {"name": "Rust"}},
+        {"name": "c", "isPrivate": True, "primaryLanguage": {"name": "TypeScript"}},
+        {"name": "d", "isPrivate": False, "primaryLanguage": None},
+    ]
+    monkeypatch.setattr(build_banner.subprocess, "run", lambda *_a, **_k: SortieGh(depots))
+    assert build_banner.compte_depuis_api() == (4, 1, 2)
+
+
+def test_refus_quand_tous_les_depots_vus_sont_publics(monkeypatch):
+    """Un jeton qui ne voit que le public rendrait un compte partiel sans erreur."""
+    depots = [
+        {"name": "a", "isPrivate": False, "primaryLanguage": None},
+        {"name": "b", "isPrivate": False, "primaryLanguage": {"name": "Python"}},
+    ]
+    monkeypatch.setattr(build_banner.subprocess, "run", lambda *_a, **_k: SortieGh(depots))
+    with pytest.raises(RuntimeError, match="tous publics"):
+        build_banner.compte_depuis_api()
 
 
 def test_refus_d_ecrire_quand_l_api_est_muette(tmp_path, monkeypatch, capsys):
@@ -103,7 +177,9 @@ def test_refus_de_compter_zero_depot(monkeypatch):
         stderr = ""
 
     monkeypatch.setattr(build_banner.subprocess, "run", lambda *_args, **_kwargs: Reponse())
-    with pytest.raises(RuntimeError, match="0 depot"):
+    # Le message exact compte : sans cette garde, la liste vide tombe sur celle du
+    # « tout public » (0 == 0) et le diagnostic affiche une mauvaise cause.
+    with pytest.raises(RuntimeError, match="compteurs vides"):
         build_banner.compte_depuis_api()
 
 

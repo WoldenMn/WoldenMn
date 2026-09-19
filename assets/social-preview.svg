@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img"
-     aria-label="WoldenMn/WoldenMn : une banniere qui compte les depots elle-meme">
+     aria-label="WoldenMn/WoldenMn : une banni&#232;re dont les chiffres sont relev&#233;s sur l'API, jamais &#233;crits &#224; la main">
   <rect width="1280" height="640" fill="#12141a"/>
   <rect x="48" y="48" width="1184" height="544" rx="18" fill="none" stroke="#2f3441" stroke-width="2"/>
   <g font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace">
@@ -17,8 +17,8 @@
       <tspan fill="#5b6373">WoldenMn</tspan><tspan fill="#3ecf8e">/</tspan><tspan fill="#e6e8ee">WoldenMn</tspan>
     </text>
 
-    <text x="114" y="376" fill="#949aa8" font-size="28">Une banniere qui compte les depots elle-meme,</text>
-    <text x="114" y="418" fill="#949aa8" font-size="28">au lieu de porter un chiffre ecrit a la main.</text>
+    <text x="114" y="376" fill="#949aa8" font-size="28">Une banni&#232;re dont les chiffres sont relev&#233;s</text>
+    <text x="114" y="418" fill="#949aa8" font-size="28">sur l'API, jamais &#233;crits &#224; la main.</text>
 
     <line x1="112" y1="486" x2="1168" y2="486" stroke="#2f3441" stroke-width="2"/>
     <g font-size="22" letter-spacing="3">

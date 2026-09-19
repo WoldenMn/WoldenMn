@@ -10,3 +10,19 @@ banniere-apercu.png
 _archive/
 export/
 .pytest_cache/
+
+# conventions locales de poste, jamais partagees
+CLAUDE.md
+_backup/
+_poubelle/
+_corr/
+audits/
+
+# secrets et config machine
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.claude/settings.local.json
+.claude/launch.json
