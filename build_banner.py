@@ -17,6 +17,7 @@ Usage :
 import argparse
 import itertools
 import json
+import re
 import subprocess
 import sys
 
@@ -60,6 +61,60 @@ def compte_depuis_api():
     langues = {(d.get("primaryLanguage") or {}).get("name") for d in depots}
     langues.discard(None)
     return len(depots), publics, len(langues)
+
+
+def accord_visible(publics):
+    return "visible" if publics <= 1 else "visibles"
+
+
+def phrase_compteurs(total, publics, langues, entites=False):
+    """Les trois compteurs en une phrase.
+
+    `entites=True` pour le SVG, dont le rendu ne doit rien devoir a l'encodage
+    annonce par le serveur ; `False` pour le README, qui est lu en UTF-8.
+    """
+    depots = "d&#233;p&#244;ts" if entites else "dépôts"
+    return (f"{total} {depots}, dont {publics} {accord_visible(publics)} publiquement, "
+            f"{langues} langages")
+
+
+def texte_alt(total, publics, langues):
+    """Le texte alternatif de la banniere dans le README.
+
+    Il porte les chiffres parce qu'il est le SEUL texte qu'un lecteur d'ecran
+    recoit : charge en <img>, le SVG n'expose pas son aria-label interne, et
+    l'alt de la balise l'emporte. Un alt qui annonce des compteurs sans les
+    donner prive ce lecteur de ce que le depot presente comme son coeur.
+
+    Le rail est nomme comme ce qu'il est, une pile revendiquee, pour ne pas le
+    faire passer pour un releve de l'API.
+    """
+    return (f"WoldenMn. Bannière : {phrase_compteurs(total, publics, langues)}, "
+            "relevés sur l'API GitHub. Le reste est privé. "
+            "Pile revendiquée : TypeScript, Python, Rust, .NET, PowerShell.")
+
+
+def maj_alt_readme(chemin, alt):
+    """Reecrit l'attribut alt de la banniere dans le README, et rend True si le
+    fichier a change.
+
+    Leve si la balise est introuvable ou en double : mieux vaut un echec bruyant
+    qu'un README qui garde en silence des chiffres perimes.
+    """
+    with open(chemin, encoding="utf-8") as f:
+        avant = f.read()
+
+    motif = re.compile(r'(<img src="\./assets/banner\.svg" alt=")([^"]*)(")')
+    trouves = motif.findall(avant)
+    if len(trouves) != 1:
+        raise RuntimeError(f"{chemin} : {len(trouves)} balise(s) de banniere trouvee(s), il en faut 1")
+
+    apres = motif.sub(lambda m: m.group(1) + alt + m.group(3), avant)
+    if apres == avant:
+        return False
+    with open(chemin, "w", encoding="utf-8") as f:
+        f.write(apres)
+    return True
 
 
 def anim_une_fois(attr, values, key_times):
@@ -110,11 +165,15 @@ def stat(x, label, valeur):
             f'font-weight="700" fill="{TEXTE}">{valeur}</text>')
 
 
-def svg(total, publics, langues):
+def svg(total, publics, langues, source="api"):
     # Accents en entites numeriques : le rendu ne depend plus de l'encodage
     # annonce par le serveur qui sert l'image.
-    visibles = "visible" if publics <= 1 else "visibles"
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="WoldenMn. {total} d&#233;p&#244;ts, dont {publics} {visibles} publiquement, {langues} langages. TypeScript, Python, Rust, .NET, PowerShell.">
+    #
+    # data-source dit d'ou viennent les chiffres. Sans lui, un fichier produit
+    # par --offline, donc tape a la main, est indiscernable d'un releve : la
+    # promesse du README serait invérifiable sur l'artefact lui-meme.
+    visibles = accord_visible(publics)
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" data-source="{source}" aria-label="WoldenMn. {phrase_compteurs(total, publics, langues, entites=True)}. TypeScript, Python, Rust, .NET, PowerShell.">
   <title>WoldenMn &#8212; {total} d&#233;p&#244;ts, {publics} {visibles}</title>
   <defs>
     <linearGradient id="scan" x1="0" y1="0" x2="1" y2="0">
@@ -164,6 +223,7 @@ def main():
 
     if args.offline:
         total, publics, langues = args.offline
+        source = "offline"
     else:
         try:
             total, publics, langues = compte_depuis_api()
@@ -172,10 +232,28 @@ def main():
             print("banner.svg NON modifie (mieux vaut pas de mise a jour qu'un chiffre faux).",
                   file=sys.stderr)
             return 1
+        source = "api"
+
+    # Le texte alternatif du README porte les memes chiffres : charge en <img>,
+    # le SVG n'expose pas son aria-label, et l'alt est tout ce qu'un lecteur
+    # d'ecran recoit. Le laisser a la main, c'est le laisser derailler.
+    #
+    # Le README passe en premier : il est le seul des deux a pouvoir refuser.
+    # S'il refuse apres coup, la banniere serait deja a jour avec un alt perime,
+    # c'est-a-dire le defaut qu'on corrige.
+    try:
+        readme_change = maj_alt_readme("README.md", texte_alt(total, publics, langues))
+    except (RuntimeError, OSError) as e:
+        print(f"ECHEC : {e}", file=sys.stderr)
+        print("rien n'a ete ecrit : la banniere et son texte alternatif vont par paire.",
+              file=sys.stderr)
+        return 1
 
     with open("assets/banner.svg", "w", encoding="utf-8") as f:
-        f.write(svg(total, publics, langues))
-    print(f"assets/banner.svg : depots={total} publics={publics} langages={langues}")
+        f.write(svg(total, publics, langues, source))
+    print(f"assets/banner.svg : depots={total} publics={publics} langages={langues} source={source}")
+    if readme_change:
+        print("README.md : texte alternatif de la banniere mis a jour")
     return 0
 
 

@@ -1,15 +1,15 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-    Regenere assets/banner.svg depuis l'API GitHub, puis publie si les compteurs ont bouge.
+    Regenere la banniere et son texte alternatif, puis publie si les compteurs ont bouge.
 .DESCRIPTION
     Les trois compteurs de la banniere sont des faits derives : ils ont un gardien
     plutot qu'une valeur ecrite a la main qui derive en silence. Ce script est ce
     gardien, joue a la demande. Sans donnees fraiches, build_banner.py echoue au
     lieu d'ecrire un chiffre perime, et ce script s'arrete avec lui.
 .PARAMETER Push
-    Commite et pousse le SVG regenere. Sans ce commutateur, le script se contente
-    de regenerer et d'afficher ce qui a change.
+    Commite et pousse les deux fichiers derives. Sans ce commutateur, le script
+    se contente de regenerer et d'afficher ce qui a change.
 .EXAMPLE
     .\rafraichir.ps1
     .\rafraichir.ps1 -Push
@@ -29,13 +29,21 @@ if ($LASTEXITCODE -ne 0) {
     throw "build_banner.py a echoue (code $LASTEXITCODE) : banniere laissee intacte."
 }
 
-$modifie = git status --porcelain -- assets/banner.svg
+# La banniere et l'alt du README portent les memes chiffres : ils se publient
+# ensemble, sinon le texte qu'un lecteur d'ecran recoit prend du retard sur
+# l'image, sans que personne le voie.
+# Le splatting @derives, et non $derives : passe a une FONCTION, une variable
+# tableau arrive comme un seul argument, alors qu'un binaire en recoit deux.
+# Les tests remplacent git par une fonction ; sans splatting, ils mesureraient
+# autre chose que ce que git recoit reellement.
+$derives = @('assets/banner.svg', 'README.md')
+$modifie = git status --porcelain -- @derives
 if ([string]::IsNullOrWhiteSpace($modifie)) {
     Write-Host "Compteurs inchanges, rien a publier."
     exit 0
 }
 
-git --no-pager diff --stat -- assets/banner.svg
+git --no-pager diff --stat -- @derives
 
 if (-not $Push) {
     Write-Host ""
@@ -43,9 +51,9 @@ if (-not $Push) {
     exit 0
 }
 
-# Scope au seul banner.svg : `git commit` sans pathspec publierait tout ce qui
-# traine dans l'index sous un message qui ne le mentionne pas.
-git commit -m "chore(banner): refresh derived counters" -- assets/banner.svg
+# Scope aux seuls fichiers derives : `git commit` sans pathspec publierait tout
+# ce qui traine dans l'index sous un message qui ne le mentionne pas.
+git commit -m "chore(banner): refresh derived counters" -- @derives
 if ($LASTEXITCODE -ne 0) { throw "git commit a echoue (code $LASTEXITCODE)." }
 git push
 if ($LASTEXITCODE -ne 0) { throw "git push a echoue (code $LASTEXITCODE)." }

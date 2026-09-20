@@ -158,8 +158,9 @@ def test_refus_d_ecrire_quand_l_api_est_muette(tmp_path, monkeypatch, capsys):
 
     monkeypatch.setattr(build_banner, "compte_depuis_api", api_muette)
     monkeypatch.setattr(sys, "argv", ["build_banner.py"])
-    monkeypatch.chdir(tmp_path)
-    (tmp_path / "assets").mkdir()
+    # Un depot complet, README compris : sans lui, le build echouerait sur le
+    # README absent et ce test passerait pour une autre raison que la sienne.
+    monkeypatch.chdir(depot_factice(tmp_path))
 
     code = build_banner.main()
 
@@ -183,11 +184,60 @@ def test_refus_de_compter_zero_depot(monkeypatch):
         build_banner.compte_depuis_api()
 
 
+def depot_factice(tmp_path, alt="ancien texte, avec de vieux chiffres"):
+    """Un dossier qui ressemble assez au depot pour que main() y travaille."""
+    (tmp_path / "assets").mkdir()
+    (tmp_path / "README.md").write_text(
+        f'<div align="center">\n  <img src="./assets/banner.svg" alt="{alt}" width="900">\n'
+        '</div>\n\nLe reste du README.\n', encoding="utf-8")
+    return tmp_path
+
+
 def test_mode_offline_ecrit_les_valeurs_donnees(tmp_path, monkeypatch):
     monkeypatch.setattr(sys, "argv", ["build_banner.py", "--offline", "7", "3", "1"])
-    monkeypatch.chdir(tmp_path)
-    (tmp_path / "assets").mkdir()
+    monkeypatch.chdir(depot_factice(tmp_path))
 
     assert build_banner.main() == 0
     ecrit = (tmp_path / "assets" / "banner.svg").read_text(encoding="utf-8")
     assert ">07<" in ecrit and ">03<" in ecrit and ">01<" in ecrit
+
+
+def test_l_alt_du_readme_porte_les_memes_chiffres_que_la_banniere(tmp_path, monkeypatch):
+    """Charge en <img>, le SVG n'expose pas son aria-label : l'alt du README est
+    le seul texte qu'un lecteur d'ecran recoit. Un alt fige devient faux des la
+    premiere relance, et personne ne le voit."""
+    monkeypatch.setattr(sys, "argv", ["build_banner.py", "--offline", "54", "2", "9"])
+    monkeypatch.chdir(depot_factice(tmp_path))
+
+    assert build_banner.main() == 0
+
+    readme = (tmp_path / "README.md").read_text(encoding="utf-8")
+    alt = re.search(r'alt="([^"]*)"', readme).group(1)
+    assert "54" in alt and "2" in alt and "9" in alt, f"alt sans les compteurs : {alt!r}"
+    assert "ancien texte" not in readme, "l'ancien alt est reste"
+    # Les memes chiffres des deux cotes : c'est la promesse, pas la presence.
+    aria = re.search(r'aria-label="([^"]*)"',
+                     (tmp_path / "assets" / "banner.svg").read_text(encoding="utf-8")).group(1)
+    for nombre in ("54", "2", "9"):
+        assert nombre in aria and nombre in alt
+
+
+def test_refus_quand_le_readme_n_a_pas_la_balise_attendue(tmp_path, monkeypatch, capsys):
+    """Un README dont la balise a bouge doit faire echouer le build, pas laisser
+    partir une banniere neuve avec un alt perime."""
+    monkeypatch.setattr(sys, "argv", ["build_banner.py", "--offline", "54", "2", "9"])
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "assets").mkdir()
+    (tmp_path / "README.md").write_text("plus aucune balise img ici\n", encoding="utf-8")
+
+    assert build_banner.main() == 1
+    assert not (tmp_path / "assets" / "banner.svg").exists(), (
+        "la banniere a ete ecrite alors que son texte alternatif ne pouvait pas suivre")
+    assert "ECHEC" in capsys.readouterr().err
+
+
+def test_la_banniere_dit_d_ou_viennent_ses_chiffres():
+    """Sans cette marque, un fichier produit par --offline, donc tape a la main,
+    est indiscernable d'un releve sur l'API."""
+    assert 'data-source="api"' in build_banner.svg(50, 2, 9)
+    assert 'data-source="offline"' in build_banner.svg(50, 2, 9, "offline")

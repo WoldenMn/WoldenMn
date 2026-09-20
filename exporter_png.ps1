@@ -100,6 +100,26 @@ function Get-CheminEdge {
     throw "msedge.exe introuvable (cherche dans EdgeCore et Edge/Application) : impossible de rendre les PNG."
 }
 
+function Invoke-Externe {
+    <#
+        Windows PowerShell 5.1 transforme la moindre ligne de stderr d'un binaire
+        en erreur terminante quand $ErrorActionPreference vaut 'Stop', meme
+        redirigee vers $null et meme quand le binaire sort a 0. Edge ecrit ce
+        bruit des qu'il n'a pas les droits sur sa cle de mise a jour, ce qui
+        depend du poste et de la session. Le seul verdict qui vaille est le code
+        de sortie.
+
+        Rien a restaurer en sortie : l'affectation ci-dessous cree une variable
+        locale a la fonction, l'appelant garde la sienne. Verifie plutot que
+        suppose, et un try/finally ici ne serait qu'un ornement.
+    #>
+    param([string]$Binaire, [string[]]$Arguments)
+
+    $ErrorActionPreference = 'Continue'
+    & $Binaire @Arguments 2>$null | Out-Null
+    return $LASTEXITCODE
+}
+
 $edge = Get-CheminEdge
 Write-Host "Edge : $edge"
 
@@ -118,8 +138,12 @@ foreach ($c in $cibles) {
     $svg = Join-Path $PSScriptRoot $c.Svg
     if (-not (Test-Path -LiteralPath $svg -PathType Leaf)) { throw "source absente : $($c.Svg)" }
 
+    # Le rendu va dans un fichier a cote : un echec ne doit pas laisser
+    # l'utilisateur sans PNG du tout. L'ancien n'est remplace qu'une fois le
+    # nouveau juge complet.
     $png = Join-Path $sorties $c.Png
-    Remove-Item -LiteralPath $png -ErrorAction SilentlyContinue
+    $provisoire = Join-Path $sorties ($c.Png -replace '\.png$', '.nouveau.png')
+    Remove-Item -LiteralPath $provisoire -ErrorAction SilentlyContinue
 
     $uri = ([Uri]$svg).AbsoluteUri
     @"
@@ -127,15 +151,22 @@ foreach ($c in $cibles) {
 img{display:block;width:$($c.L)px;height:$($c.H)px}</style><img src="$uri">
 "@ | Set-Content -LiteralPath $page -Encoding UTF8
 
-    & $edge --headless --disable-gpu --hide-scrollbars `
-            "--force-device-scale-factor=$($c.Echelle)" `
-            "--screenshot=$png" "--window-size=$($c.L),$($c.H)" `
-            ([Uri]$page).AbsoluteUri 2>$null | Out-Null
+    $code = Invoke-Externe -Binaire $edge -Arguments @(
+        '--headless', '--disable-gpu', '--hide-scrollbars',
+        "--force-device-scale-factor=$($c.Echelle)",
+        "--screenshot=$provisoire", "--window-size=$($c.L),$($c.H)",
+        ([Uri]$page).AbsoluteUri)
 
-    $octets = Wait-Fichier -Chemin $png
-    if ($octets -eq 0) { throw "Edge n'a rien ecrit pour $($c.Png) apres 20 s d'attente." }
+    $octets = Wait-Fichier -Chemin $provisoire
+    if ($octets -eq 0) {
+        throw "Edge n'a rien ecrit pour $($c.Png) apres 20 s d'attente (code de sortie $code). L'ancien PNG est intact."
+    }
     $ko = [math]::Round($octets / 1KB, 1)
-    if ($ko -le 1) { throw "$($c.Png) fait $ko Ko : rendu vide, refus de le garder." }
+    if ($ko -le 1) {
+        Remove-Item -LiteralPath $provisoire -ErrorAction SilentlyContinue
+        throw "$($c.Png) fait $ko Ko : rendu vide, refus de le garder. L'ancien PNG est intact."
+    }
+    Move-Item -LiteralPath $provisoire -Destination $png -Force
     Write-Host ("  {0,-22} {1,6} Ko  ({2}x{3})" -f $c.Png, $ko, ($c.L * $c.Echelle), ($c.H * $c.Echelle))
 }
 Remove-Item -LiteralPath $page -ErrorAction SilentlyContinue
