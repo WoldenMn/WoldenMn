@@ -64,6 +64,16 @@ PYTHON = [
     ("compteur sans zero de tete", "build_banner.py", 'f"{publics:02d}"', 'f"{publics:d}"',
      "test_compteurs_rendus_sur_deux_chiffres"),
     ("accord de visible faux", "build_banner.py", "if publics <= 1 else", "if publics < 1 else", "test_accord_de_visible"),
+    ("alt du README laisse tel quel", "build_banner.py",
+     'readme_change = maj_alt_readme("README.md", texte_alt(total, publics, langues))',
+     "readme_change = False",
+     "test_l_alt_du_readme_porte_les_memes_chiffres_que_la_banniere"),
+    ("garde de la balise du README retiree", "build_banner.py",
+     "if len(trouves) != 1:", "if False:",
+     "test_refus_quand_le_readme_n_a_pas_la_balise_attendue"),
+    ("provenance de la banniere retiree", "build_banner.py",
+     ' data-source="{source}"', "",
+     "test_la_banniere_dit_d_ou_viennent_ses_chiffres"),
 ]
 
 PESTER = [
@@ -72,11 +82,11 @@ PESTER = [
      'Write-Host "Les compteurs ont bouge. Relance avec -Push pour commiter et publier."',
      "sans -Push, ne commite ni ne pousse rien"),
     ("commit non scope", "rafraichir.ps1",
-     'git commit -m "chore(banner): refresh derived counters" -- assets/banner.svg',
+     'git commit -m "chore(banner): refresh derived counters" -- @derives',
      'git commit -m "chore(banner): refresh derived counters"',
-     "avec -Push, un seul commit, scope au seul banner.svg, puis un push"),
+     "avec -Push, un seul commit, scope aux deux fichiers derives, puis un push"),
     ("push force", "rafraichir.ps1", "git push\n", "git push --force\n",
-     "avec -Push, un seul commit, scope au seul banner.svg, puis un push"),
+     "avec -Push, un seul commit, scope aux deux fichiers derives, puis un push"),
     ("echec de git commit ignore", "rafraichir.ps1",
      'throw "git commit a echoue (code $LASTEXITCODE)."', 'Write-Warning "git commit a echoue (code $LASTEXITCODE)."',
      "leve et ne pousse rien quand git commit echoue"),
@@ -104,6 +114,18 @@ PESTER = [
      "refuse un fichier qui finit par IEND sans commencer par la signature"),
     ("attente supprimee", "exporter_png.ps1", "(Test-PngComplet $Chemin)", "$true",
      "refuse un fichier bien dodu qui n'est pas un PNG"),
+    ("appel externe rendu sensible au stderr", "exporter_png.ps1",
+     "    $ErrorActionPreference = 'Continue'\n", "    $ErrorActionPreference = 'Stop'\n",
+     "ne leve pas quand le binaire ecrit sur stderr et sort a zero"),
+    ("code de sortie ignore", "exporter_png.ps1", "return $LASTEXITCODE", "return 0",
+     "rend le code de sortie du binaire plutot que de l'ignorer"),
+    ("README retire du commit", "rafraichir.ps1",
+     "$derives = @('assets/banner.svg', 'README.md')", "$derives = @('assets/banner.svg')",
+     "avec -Push, un seul commit, scope aux deux fichiers derives, puis un push"),
+    ("splatting retire du commit", "rafraichir.ps1",
+     'git commit -m "chore(banner): refresh derived counters" -- @derives',
+     'git commit -m "chore(banner): refresh derived counters" -- $derives',
+     "avec -Push, un seul commit, scope aux deux fichiers derives, puis un push"),
 ]
 
 TEMOIN_PYTHON = ("tests/test_build_banner.py", "ElementTree.fromstring(build_banner.svg(50, 2, 9))",
@@ -177,9 +199,31 @@ def muter(d, fichier, avant, apres):
     return cible, sain
 
 
+def controle_des_motifs(d, mutations, temoin):
+    """Verifie d'un coup que chaque motif vise une occurrence et une seule.
+
+    Sans ce controle, un motif devenu obsolete n'apparait qu'au moment ou son
+    tour vient, apres avoir deja depense plusieurs minutes de suite Pester.
+    """
+    # Le temoin porte (fichier, motif, remplacement, test) ; une mutation porte
+    # un libelle en plus, devant.
+    a_verifier = [("temoin", temoin[0], temoin[1])]
+    a_verifier += [(libelle, fichier, avant) for libelle, fichier, avant, _, _ in mutations]
+
+    morts = []
+    for libelle, fichier, avant in a_verifier:
+        vus = lire(d / fichier).count(avant)
+        if vus != 1:
+            morts.append(f"{libelle} : {vus} occurrence(s) dans {fichier}")
+    if morts:
+        raise InstrumentMuet("motifs qui ne visent plus une occurrence unique :\n    "
+                             + "\n    ".join(morts))
+
+
 def passe(nom, mutations, echecs, temoin):
     print(f"=== {nom} ===")
     d = copie()
+    controle_des_motifs(d, mutations, temoin)
     try:
         if echecs(d):
             print("  temoin connu-bon ROUGE : la suite echoue deja sur le code sain")

@@ -69,13 +69,22 @@ Describe 'rafraichir.ps1, execute sous mocks' {
         Should -Invoke git -Exactly -Times 0 -ParameterFilter { $args -contains 'commit' }
     }
 
-    It 'avec -Push, un seul commit, scope au seul banner.svg, puis un push' {
+    It 'avec -Push, un seul commit, scope aux deux fichiers derives, puis un push' {
         # Un commit sans pathspec publie tout l'index sous un message qui ne le
         # mentionne pas : deux suppressions de workflow sont presque parties ainsi.
+        # Les deux chemins vont ensemble : la banniere et l'alt du README portent
+        # les memes chiffres, publier l'un sans l'autre les desaccorde.
         Push-Location
         try { & $script:Rafraichir -Push } finally { Pop-Location }
-        Should -Invoke git -Exactly -Times 1 -ParameterFilter { $args[0] -eq 'commit' -and $args[-1] -eq 'assets/banner.svg' }
-        Should -Invoke git -Exactly -Times 0 -ParameterFilter { $args[0] -eq 'commit' -and $args[-1] -ne 'assets/banner.svg' }
+        Should -Invoke git -Exactly -Times 1 -ParameterFilter {
+            $args[0] -eq 'commit' -and $args -contains 'assets/banner.svg' -and $args -contains 'README.md'
+        }
+        Should -Invoke git -Exactly -Times 0 -ParameterFilter {
+            $args[0] -eq 'commit' -and -not ($args -contains 'assets/banner.svg' -and $args -contains 'README.md')
+        }
+        # Pas de verification du `--` : PowerShell le retire des arguments d'une
+        # FONCTION, donc le mock ne le voit jamais, alors que le vrai binaire le
+        # recoit. Le tester ici mesurerait le mock, pas git.
         Should -Invoke git -Exactly -Times 1 -ParameterFilter { $args[0] -eq 'push' -and $args.Count -eq 1 }
         Should -Invoke git -Exactly -Times 0 -ParameterFilter { $args[0] -eq 'push' -and $args.Count -gt 1 }
     }
@@ -139,6 +148,30 @@ Describe 'exporter_png.ps1' {
                 ${env:ProgramFiles(x86)} = $sauve
             }
         }
+    }
+
+    Context 'Invoke-Externe' {
+        # Le 2026-09-20, l'export a plante sous Windows PowerShell 5.1 : Edge
+        # avait ecrit une ligne sur stderr faute de droits sur sa cle de mise a
+        # jour, et $ErrorActionPreference = 'Stop' en a fait une erreur
+        # terminante. Le meme script passait sous pwsh 7, d'ou un bug qui ne se
+        # voyait pas la ou on le lancait.
+
+        It 'ne leve pas quand le binaire ecrit sur stderr et sort a zero' {
+            $ErrorActionPreference = 'Stop'
+            { Invoke-Externe -Binaire $env:ComSpec `
+                -Arguments @('/c', 'echo bruit 1>&2 & exit 0') } | Should -Not -Throw
+        }
+
+        It 'rend le code de sortie du binaire plutot que de l''ignorer' {
+            $ErrorActionPreference = 'Stop'
+            Invoke-Externe -Binaire $env:ComSpec -Arguments @('/c', 'exit 3') | Should -Be 3
+        }
+
+        # Pas de test sur la restauration de $ErrorActionPreference : la passe de
+        # mutation a montre qu'il ne mordait pas. L'affectation dans la fonction
+        # est locale a sa portee, donc l'appelant retrouve la sienne meme sans
+        # rien restaurer. Le code qui allait avec a ete retire.
     }
 
     Context 'Wait-Fichier' {
