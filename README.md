@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/banner.svg" alt="WoldenMn. Bannière : 9 dépôts, dont 2 visibles publiquement, 5 langages, relevés sur l'API GitHub. Le reste est privé. Pile revendiquée : TypeScript, Python, Rust, .NET, PowerShell." width="900">
+  <img src="./assets/banner.svg" alt="WoldenMn. Bannière : 8 dépôts, dont 2 visibles publiquement, 4 langages, relevés sur l'API GitHub. Le reste est privé. Pile revendiquée : TypeScript, Python, Rust, .NET, PowerShell." width="900">
 </div>
 
 ```console
