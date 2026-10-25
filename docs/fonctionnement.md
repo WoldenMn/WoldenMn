@@ -87,13 +87,13 @@ les tests : valeur figée de chaque animation égale à l'opacité de repos.
 ## Le rafraîchissement, à la demande
 
 ```powershell
-.\rafraichir.ps1        # régénère et montre ce qui a bougé
-.\rafraichir.ps1 -Push  # régénère, commite et publie
+.\Rafraichir-Banniere.ps1        # régénère et montre ce qui a bougé
+.\Rafraichir-Banniere.ps1 -Push  # régénère, commite et publie
 ```
 
 Depuis PowerShell 7. Sous Windows PowerShell 5.1, dont la stratégie d'exécution
 est souvent `Restricted`, passer par
-`powershell -NoProfile -ExecutionPolicy Bypass -File .\rafraichir.ps1`.
+`powershell -NoProfile -ExecutionPolicy Bypass -File .\Rafraichir-Banniere.ps1`.
 
 Le script s'arrête si `build_banner.py` échoue, et la bannière reste alors
 intacte. Sans `-Push`, il ne commite ni ne pousse rien. Avec, il commite **deux
@@ -133,7 +133,7 @@ prêt, pas du travail en place.
 GitHub n'accepte que du PNG, du JPG ou du GIF à l'upload, d'où :
 
 ```powershell
-.\exporter_png.ps1
+.\Exporter-Png.ps1
 ```
 
 Il écrit `export/avatar.png` (920 × 920) et `export/social-preview.png`
@@ -218,13 +218,13 @@ lisible au repos ; aucune référence qui sorte du fichier, ni en attribut ni en
 le texte alternatif du README porteur des mêmes chiffres que la bannière, et le
 refus d'écrire quoi que ce soit si ce README ne peut pas suivre.
 
-Côté PowerShell, `rafraichir.ps1` est **exécuté** sous des mocks de `git` et de
+Côté PowerShell, `Rafraichir-Banniere.ps1` est **exécuté** sous des mocks de `git` et de
 `python` qui enregistrent chaque appel : rien ne part sans `-Push` ; avec, un seul
 commit limité à `assets/banner.svg`, puis un push simple, jamais forcé ; rien non
 plus quand les compteurs n'ont pas bougé ou que `build_banner.py` échoue. Un
 commit qui échoue arrête tout avant le push, et un push qui échoue lève une
 erreur au lieu d'annoncer la bannière publiée. Pour
-`exporter_png.ps1` : la recherche d'Edge, la complétude du PNG face à un
+`Exporter-Png.ps1` : la recherche d'Edge, la complétude du PNG face à un
 fichier vide, un fichier dodu qui n'est pas une image, un `IEND` sans signature et
 un chunk final qui arrive en retard, et l'appel au binaire, qui doit survivre à
 du bruit sur la sortie d'erreur et rendre le code de sortie.
@@ -238,7 +238,7 @@ python tests/mutations.py
 Un test qui n'a jamais rougi ne prouve rien. `tests/mutations.py` casse une à une
 les gardes **couvertes par la suite** dans une copie du dépôt, relance les tests,
 et vérifie qu'ils rougissent. Ce que ça ne couvre pas : le corps de
-`exporter_png.ps1`, en dessous de `Get-CheminEdge`, n'est pas exécuté par la
+`Exporter-Png.ps1`, en dessous de `Get-CheminEdge`, n'est pas exécuté par la
 suite, qui n'en charge que les fonctions. Les gardes qui vivent là, dont le
 remplacement du PNG seulement une fois le rendu complet, n'ont pas de mutation
 qui les vise. Deux témoins encadrent la passe : le code sain doit rester vert, et un

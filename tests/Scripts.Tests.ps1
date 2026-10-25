@@ -14,16 +14,16 @@
 BeforeAll {
     $script:Racine = Split-Path -Parent $PSScriptRoot
 
-    # exporter_png.ps1 s'execute des qu'on le dot-source : il rendrait les PNG a
+    # Exporter-Png.ps1 s'execute des qu'on le dot-source : il rendrait les PNG a
     # chaque passage de la suite. On extrait donc ses fonctions par leur texte.
     #
     # Elles sont chargees comme un module en memoire plutot que par
     # Invoke-Expression : Pester 5 isole les portees, et une fonction definie
     # dans BeforeAll n'atteint pas les blocs It. Import-Module -Global, si.
-    $src = Get-Content (Join-Path $script:Racine 'exporter_png.ps1') -Raw
+    $src = Get-Content (Join-Path $script:Racine 'Exporter-Png.ps1') -Raw
     $debut = $src.IndexOf('function Test-PngComplet')
     $fin = $src.IndexOf('$edge = Get-CheminEdge')
-    if ($debut -lt 0 -or $fin -lt 0) { throw 'fonctions introuvables dans exporter_png.ps1' }
+    if ($debut -lt 0 -or $fin -lt 0) { throw 'fonctions introuvables dans Exporter-Png.ps1' }
 
     New-Module -Name FonctionsExport -ScriptBlock ([scriptblock]::Create($src.Substring($debut, $fin - $debut))) |
         Import-Module -Force -Global
@@ -44,14 +44,14 @@ BeforeAll {
     }
 }
 
-Describe 'rafraichir.ps1, execute sous mocks' {
+Describe 'Rafraichir-Banniere.ps1, execute sous mocks' {
     # La premiere version de ces tests cherchait du texte dans le script. Une
     # contre-expertise du 2026-09-18 a retire le `exit 0` du bloc sans -Push :
     # le script enchainait alors commit et push, et les tests restaient verts.
     # Ils executent donc le script, avec git et python remplaces par des mocks
     # qui enregistrent chaque appel.
 
-    BeforeAll { $script:Rafraichir = Join-Path $script:Racine 'rafraichir.ps1' }
+    BeforeAll { $script:Rafraichir = Join-Path $script:Racine 'Rafraichir-Banniere.ps1' }
 
     BeforeEach {
         Mock python { $global:LASTEXITCODE = 0 }
@@ -131,7 +131,7 @@ Describe 'rafraichir.ps1, execute sous mocks' {
     }
 }
 
-Describe 'exporter_png.ps1' {
+Describe 'Exporter-Png.ps1' {
 
     Context 'Get-CheminEdge' {
 

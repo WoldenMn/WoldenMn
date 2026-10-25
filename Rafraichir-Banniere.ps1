@@ -11,8 +11,8 @@
     Commite et pousse les deux fichiers derives. Sans ce commutateur, le script
     se contente de regenerer et d'afficher ce qui a change.
 .EXAMPLE
-    .\rafraichir.ps1
-    .\rafraichir.ps1 -Push
+    .\Rafraichir-Banniere.ps1
+    .\Rafraichir-Banniere.ps1 -Push
 #>
 [CmdletBinding()]
 param([switch]$Push)

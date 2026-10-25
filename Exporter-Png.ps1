@@ -14,7 +14,7 @@
 
     Les PNG produits vont dans export/, hors du depot : ce sont des derives.
 .EXAMPLE
-    .\exporter_png.ps1
+    .\Exporter-Png.ps1
 #>
 [CmdletBinding()]
 param()
