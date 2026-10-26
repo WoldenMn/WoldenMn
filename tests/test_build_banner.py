@@ -40,7 +40,10 @@ def test_compteurs_rendus_sur_deux_chiffres():
 
 
 def test_svg_bien_forme():
-    ElementTree.fromstring(build_banner.svg(50, 2, 9))
+    racine = ElementTree.fromstring(build_banner.svg(50, 2, 9))
+    assert racine.tag == "{http://www.w3.org/2000/svg}svg"
+    assert racine.get("viewBox") == f"0 0 {build_banner.W} {build_banner.H}"
+    assert (racine.get("width"), racine.get("height")) == (str(build_banner.W), str(build_banner.H))
 
 
 def test_aucune_ressource_chargee_depuis_le_reseau():
