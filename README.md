@@ -47,5 +47,5 @@ tiennent, et ce qu'ils ont attrapé en échouant :
 [comment il fonctionne](docs/fonctionnement.md).
 
 <div align="center">
-  <sub><code>compteurs relevés sur l'API — la bannière dit elle-même d'où viennent ses chiffres : data-source</code></sub>
+  <sub><code>compteurs relevés sur l'API. La bannière dit elle-même d'où viennent ses chiffres : data-source</code></sub>
 </div>
