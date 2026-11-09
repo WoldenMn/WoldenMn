@@ -73,7 +73,7 @@ Describe 'Rafraichir-Banniere.ps1, execute sous mocks' {
         # Un commit sans pathspec publie tout l'index sous un message qui ne le
         # mentionne pas : deux suppressions de workflow sont presque parties ainsi.
         # Les deux chemins vont ensemble : la banniere et l'alt du README portent
-        # les memes chiffres, publier l'un sans l'autre les desaccorde.
+        # les memes mots, publier l'un sans l'autre les desaccorde.
         Push-Location
         try { & $script:Rafraichir -Push } finally { Pop-Location }
         Should -Invoke git -Exactly -Times 1 -ParameterFilter {
@@ -108,7 +108,7 @@ Describe 'Rafraichir-Banniere.ps1, execute sous mocks' {
         try { { & $script:Rafraichir -Push } | Should -Throw -ExpectedMessage '*git push a echoue*' } finally { Pop-Location }
     }
 
-    It 'ne publie rien quand les compteurs n''ont pas bouge' {
+    It 'ne publie rien quand la banniere n''a pas bouge' {
         Mock git { $global:LASTEXITCODE = 0 }
         Push-Location
         try { & $script:Rafraichir -Push } finally { Pop-Location }

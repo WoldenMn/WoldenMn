@@ -27,27 +27,13 @@ DEPOT = Path(__file__).resolve().parents[1]
 FICHIERS = ["build_banner.py", "Rafraichir-Banniere.ps1", "Exporter-Png.ps1",
             "tests/test_build_banner.py", "tests/Scripts.Tests.ps1"]
 
-CALCUL = "test_compteurs_calcules_sur_une_sortie_realiste"
 TITRE = "test_titre_decode_une_seule_fois_puis_reste_lisible"
 RESEAU = "test_aucune_ressource_chargee_depuis_le_reseau"
+TEXTES = "test_la_banniere_porte_l_accroche_et_le_terrain"
 
 # (libelle, fichier, avant, apres, test attendu). Le motif « avant » doit
 # apparaitre exactement une fois : sinon la mutation tombe sur une autre ligne.
 PYTHON = [
-    ("publics inverses", "build_banner.py",
-     'publics = sum(1 for d in depots if not d["isPrivate"])', 'publics = sum(1 for d in depots if d["isPrivate"])', CALCUL),
-    ("langage absent compte", "build_banner.py", "    langues.discard(None)\n", "", CALCUL),
-    ("total = publics", "build_banner.py",
-     "return len(depots), publics, len(langues)", "return publics, publics, len(langues)", CALCUL),
-    ("langues = total", "build_banner.py",
-     "return len(depots), publics, len(langues)", "return len(depots), publics, len(depots)", CALCUL),
-    ("garde tout-public retiree", "build_banner.py", "if publics == len(depots):", "if False:",
-     "test_refus_quand_tous_les_depots_vus_sont_publics"),
-    ("garde zero depot retiree", "build_banner.py", "    if not depots:", "    if False:",
-     "test_refus_de_compter_zero_depot"),
-    ("ecrit malgre l'echec d'API", "build_banner.py",
-     "            return 1\n", "            total, publics, langues = 0, 0, 0\n",
-     "test_refus_d_ecrire_quand_l_api_est_muette"),
     ("titre qui boucle a nouveau", "build_banner.py",
      'calcMode="discrete" fill="freeze"', 'calcMode="discrete" fill="freeze" repeatCount="indefinite"', TITRE),
     ("freeze retire", "build_banner.py", 'calcMode="discrete" fill="freeze"', 'calcMode="discrete"', TITRE),
@@ -61,29 +47,32 @@ PYTHON = [
     ("image relative", "build_banner.py", "<defs>", '<defs><image href="assets/autre.png"/>', RESEAU),
     ("url() externe dans un style", "build_banner.py", "<defs>",
      "<defs><style>@font-face{{font-family:x;src:url(police.woff)}}</style>", RESEAU),
-    ("compteur sans zero de tete", "build_banner.py", 'f"{publics:02d}"', 'f"{publics:d}"',
-     "test_compteurs_rendus_sur_deux_chiffres"),
-    ("accord de visible faux", "build_banner.py", "if publics <= 1 else", "if publics < 1 else", "test_accord_de_visible"),
+    ("accroche retiree de l'image", "build_banner.py", "{entites(ACCROCHE)}</text>", "</text>", TEXTES),
+    ("terrain retire de l'image", "build_banner.py", "{entites(TERRAIN)}</text>", "</text>", TEXTES),
+    ("point median dans le terrain", "build_banner.py",
+     'TERRAIN = "windows au quotidien, ', 'TERRAIN = "windows · au quotidien, ', "test_ni_compteur_ni_pile_de_langages"),
+    ("accents laisses en clair", "build_banner.py",
+     'return "".join(c if ord(c) < 128 else f"&#{ord(c)};" for c in texte)', "return texte",
+     "test_accents_en_entites"),
     ("alt du README laisse tel quel", "build_banner.py",
-     'readme_change = maj_alt_readme("README.md", texte_alt(total, publics, langues))',
-     "readme_change = False",
-     "test_l_alt_du_readme_porte_les_memes_chiffres_que_la_banniere"),
+     'readme_change = maj_alt_readme("README.md", texte_alt())', "readme_change = False",
+     "test_l_alt_du_readme_suit_la_banniere"),
     ("garde de la balise du README retiree", "build_banner.py",
      "if len(trouves) != 1:", "if False:",
      "test_refus_quand_le_readme_n_a_pas_la_balise_attendue"),
-    ("provenance de la banniere retiree", "build_banner.py",
-     ' data-source="{source}"', "",
-     "test_la_banniere_dit_d_ou_viennent_ses_chiffres"),
+    ("README absent non rattrape", "build_banner.py",
+     "except (RuntimeError, OSError) as e:", "except RuntimeError as e:",
+     "test_refus_quand_le_readme_est_absent"),
 ]
 
 PESTER = [
     ("exit 0 retire du bloc sans -Push", "Rafraichir-Banniere.ps1",
-     'Write-Host "Les compteurs ont bouge. Relance avec -Push pour commiter et publier."\n    exit 0',
-     'Write-Host "Les compteurs ont bouge. Relance avec -Push pour commiter et publier."',
+     'Write-Host "La banniere a change. Relance avec -Push pour commiter et pousser."\n    exit 0',
+     'Write-Host "La banniere a change. Relance avec -Push pour commiter et pousser."',
      "sans -Push, ne commite ni ne pousse rien"),
     ("commit non scope", "Rafraichir-Banniere.ps1",
-     'git commit -m "chore(banner): refresh derived counters" -- @derives',
-     'git commit -m "chore(banner): refresh derived counters"',
+     'git commit -m "chore(banner): regenerate the banner" -- @derives',
+     'git commit -m "chore(banner): regenerate the banner"',
      "avec -Push, un seul commit, scope aux deux fichiers derives, puis un push"),
     ("push force", "Rafraichir-Banniere.ps1", "git push\n", "git push --force\n",
      "avec -Push, un seul commit, scope aux deux fichiers derives, puis un push"),
@@ -97,9 +86,9 @@ PESTER = [
      'throw "python introuvable dans le PATH : impossible de regenerer la banniere."',
      'Write-Warning "python introuvable dans le PATH : impossible de regenerer la banniere."',
      "leve si python est introuvable, sans rien lancer"),
-    ("controle des compteurs inchanges retire", "Rafraichir-Banniere.ps1",
+    ("controle de la banniere inchangee retire", "Rafraichir-Banniere.ps1",
      "if ([string]::IsNullOrWhiteSpace($modifie)) {", "if ($false) {",
-     "ne publie rien quand les compteurs n'ont pas bouge"),
+     "ne publie rien quand la banniere n'a pas bouge"),
     ("echec de build_banner ignore", "Rafraichir-Banniere.ps1",
      'if ($LASTEXITCODE -ne 0) {\n    throw "build_banner.py', 'if ($false) {\n    throw "build_banner.py',
      "ne publie rien quand build_banner.py echoue"),
@@ -123,12 +112,12 @@ PESTER = [
      "$derives = @('assets/banner.svg', 'README.md')", "$derives = @('assets/banner.svg')",
      "avec -Push, un seul commit, scope aux deux fichiers derives, puis un push"),
     ("splatting retire du commit", "Rafraichir-Banniere.ps1",
-     'git commit -m "chore(banner): refresh derived counters" -- @derives',
-     'git commit -m "chore(banner): refresh derived counters" -- $derives',
+     'git commit -m "chore(banner): regenerate the banner" -- @derives',
+     'git commit -m "chore(banner): regenerate the banner" -- $derives',
      "avec -Push, un seul commit, scope aux deux fichiers derives, puis un push"),
 ]
 
-TEMOIN_PYTHON = ("tests/test_build_banner.py", "ElementTree.fromstring(build_banner.svg(50, 2, 9))",
+TEMOIN_PYTHON = ("tests/test_build_banner.py", 'assert racine.tag == "{http://www.w3.org/2000/svg}svg"',
                  "assert False", "test_svg_bien_forme")
 TEMOIN_PESTER = ("tests/Scripts.Tests.ps1", "Get-CheminEdge | Should -Exist", "$false | Should -BeTrue",
                  "trouve un binaire reel sur ce poste")

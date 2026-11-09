@@ -1,19 +1,14 @@
 """Garde les promesses de build_banner.py.
 
-Le coeur de ce depot n'est pas de dessiner joli : c'est que le script ecrive
-des compteurs releves sur l'API, ou n'ecrive rien. La banniere peut alors rester
-perimee, et un jeton a visibilite partielle passe (voir docs/fonctionnement.md).
-Et que la banniere reste lisible chez un moteur qui n'anime pas. Ces deux
-promesses etaient tenues a la main jusqu'ici.
+La banniere doit rester lisible chez un moteur qui n'anime pas, ne rien charger
+depuis le reseau, dire ce qu'elle dit sans compteur ni pile de langages, et
+partir avec un texte alternatif qui porte les memes mots.
 """
 
-import json
 import re
 import sys
 from pathlib import Path
 from xml.etree import ElementTree
-
-import pytest
 
 RACINE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RACINE))
@@ -33,14 +28,23 @@ def titre_et_glyphes(doc):
     return [t for t in elements(doc, "text") if t.get("font-size") == "44"]
 
 
-def test_compteurs_rendus_sur_deux_chiffres():
-    doc = build_banner.svg(50, 2, 9)
-    for attendu in (">50<", ">02<", ">09<"):
-        assert attendu in doc, f"compteur absent : {attendu}"
+def textes_visibles(doc):
+    """Le texte de chaque <text> hors trame de glyphes et hors titre."""
+    return [t.text or "" for t in elements(doc, "text")
+            if t.get("opacity") is None and t.get("font-size") != "44"]
+
+
+def depot_factice(tmp_path, alt="ancien texte, qui ne suit plus l'image"):
+    """Un dossier qui ressemble assez au depot pour que main() y travaille."""
+    (tmp_path / "assets").mkdir()
+    (tmp_path / "README.md").write_text(
+        f'<div align="center">\n  <img src="./assets/banner.svg" alt="{alt}" width="900">\n'
+        '</div>\n\nLe reste du README.\n', encoding="utf-8")
+    return tmp_path
 
 
 def test_svg_bien_forme():
-    racine = ElementTree.fromstring(build_banner.svg(50, 2, 9))
+    racine = ElementTree.fromstring(build_banner.svg())
     assert racine.tag == "{http://www.w3.org/2000/svg}svg"
     assert racine.get("viewBox") == f"0 0 {build_banner.W} {build_banner.H}"
     assert (racine.get("width"), racine.get("height")) == (str(build_banner.W), str(build_banner.H))
@@ -56,7 +60,7 @@ def test_aucune_ressource_chargee_depuis_le_reseau():
     interne. Ce qui compte, c'est qu'aucun ATTRIBUT ne demande une ressource
     distante.
     """
-    doc = build_banner.svg(50, 2, 9)
+    doc = build_banner.svg()
     assert "@import" not in doc and "<script" not in doc
 
     for el in elements(doc):
@@ -79,7 +83,7 @@ def test_titre_lisible_quand_rien_ne_s_anime():
     """
     lettres = set(build_banner.TITRE)
     au_repos = []
-    for noeud in titre_et_glyphes(build_banner.svg(50, 2, 9)):
+    for noeud in titre_et_glyphes(build_banner.svg()):
         if noeud.get("opacity") != "0":
             au_repos.append(noeud.text or "")
 
@@ -94,7 +98,7 @@ def test_titre_decode_une_seule_fois_puis_reste_lisible():
     """La version qui bouclait re-brouillait le titre toutes les 9 s : illisible
     40 % du temps, mesure le 2026-09-18. Chaque animation du titre joue une fois,
     puis fige une derniere valeur egale a l'etat de repos."""
-    noeuds = titre_et_glyphes(build_banner.svg(50, 2, 9))
+    noeuds = titre_et_glyphes(build_banner.svg())
     assert noeuds
     for noeud in noeuds:
         anims = [a for a in noeud if a.tag.rsplit("}", 1)[-1] == "animate"]
@@ -107,128 +111,55 @@ def test_titre_decode_une_seule_fois_puis_reste_lisible():
             finale = valeurs.split(";")[-1]
             assert finale == noeud.get("opacity"), (
                 f"{noeud.text!r} finit a {finale}, son repos est {noeud.get('opacity')}")
-            # Le decodage doit se voir a l'arrivee : un titre qui ne se revele
-            # qu'au bout de 9 s est illisible pour qui passe vite.
             bascule = float(instants.split(";")[-1]) * float(duree.rstrip("s"))
             assert bascule < 3.0, f"{noeud.text!r} se decode a {bascule:.2f} s"
 
 
-def test_accord_de_visible():
-    assert "1 visible " in build_banner.svg(50, 1, 9)
-    assert "2 visibles " in build_banner.svg(50, 2, 9)
+def test_la_banniere_porte_l_accroche_et_le_terrain():
+    visibles = textes_visibles(build_banner.svg())
+    for attendu in (build_banner.ACCROCHE, build_banner.TERRAIN):
+        assert attendu in visibles, f"texte absent de l'image : {attendu!r}"
 
 
-class SortieGh:
-    returncode = 0
-    stderr = ""
-
-    def __init__(self, depots):
-        self.stdout = json.dumps(depots)
-
-
-def test_compteurs_calcules_sur_une_sortie_realiste(monkeypatch):
-    """La forme reelle de gh : un depot sans langage porte primaryLanguage null.
-
-    Les valeurs attendues sont toutes distinctes (4, 1, 2) : inverser prives et
-    publics, compter le langage absent, confondre total et publics, ou compter
-    les langages avec leurs doublons donnent chacun un autre triplet.
-    """
-    depots = [
-        {"name": "a", "isPrivate": True, "primaryLanguage": {"name": "Rust"}},
-        {"name": "b", "isPrivate": True, "primaryLanguage": {"name": "Rust"}},
-        {"name": "c", "isPrivate": True, "primaryLanguage": {"name": "TypeScript"}},
-        {"name": "d", "isPrivate": False, "primaryLanguage": None},
-    ]
-    monkeypatch.setattr(build_banner.subprocess, "run", lambda *_a, **_k: SortieGh(depots))
-    assert build_banner.compte_depuis_api() == (4, 1, 2)
+def test_ni_compteur_ni_pile_de_langages():
+    """Le profil presente un techos : plus de chiffres releves, plus de rail de
+    langages, plus de lignes a points medians."""
+    doc = build_banner.svg()
+    for texte in textes_visibles(doc):
+        assert "&#183;" not in texte and "·" not in texte, f"point median dans {texte!r}"
+        assert not re.search(r"\d{2}", texte), f"compteur dans {texte!r}"
+        assert "priv" not in texte.lower(), f"l'atelier ferme revient : {texte!r}"
+    assert "data-source" not in doc, "une provenance de chiffres sans chiffres"
 
 
-def test_refus_quand_tous_les_depots_vus_sont_publics(monkeypatch):
-    """Un jeton qui ne voit que le public rendrait un compte partiel sans erreur."""
-    depots = [
-        {"name": "a", "isPrivate": False, "primaryLanguage": None},
-        {"name": "b", "isPrivate": False, "primaryLanguage": {"name": "Python"}},
-    ]
-    monkeypatch.setattr(build_banner.subprocess, "run", lambda *_a, **_k: SortieGh(depots))
-    with pytest.raises(RuntimeError, match="tous publics"):
-        build_banner.compte_depuis_api()
+def test_accents_en_entites():
+    """Le rendu ne doit rien devoir a l'encodage annonce par le serveur."""
+    doc = build_banner.svg()
+    assert doc.isascii(), f"caractere non ASCII : {[c for c in doc if not c.isascii()][:5]}"
 
 
-def test_refus_d_ecrire_quand_l_api_est_muette(tmp_path, monkeypatch, capsys):
-    """API injoignable : code de sortie non nul, et surtout aucune ecriture."""
-    def api_muette():
-        raise RuntimeError("gh introuvable")
-
-    monkeypatch.setattr(build_banner, "compte_depuis_api", api_muette)
-    monkeypatch.setattr(sys, "argv", ["build_banner.py"])
-    # Un depot complet, README compris : sans lui, le build echouerait sur le
-    # README absent et ce test passerait pour une autre raison que la sienne.
-    monkeypatch.chdir(depot_factice(tmp_path))
-
-    code = build_banner.main()
-
-    assert code == 1, "un echec d'API doit rendre un code non nul"
-    assert not (tmp_path / "assets" / "banner.svg").exists(), (
-        "un chiffre faux a ete ecrit alors que l'API etait muette")
-    assert "ECHEC" in capsys.readouterr().err
-
-
-def test_refus_de_compter_zero_depot(monkeypatch):
-    """Une reponse vide n'est pas 'zero depot' : c'est un appel qui a echoue."""
-    class Reponse:
-        returncode = 0
-        stdout = "[]"
-        stderr = ""
-
-    monkeypatch.setattr(build_banner.subprocess, "run", lambda *_args, **_kwargs: Reponse())
-    # Le message exact compte : sans cette garde, la liste vide tombe sur celle du
-    # « tout public » (0 == 0) et le diagnostic affiche une mauvaise cause.
-    with pytest.raises(RuntimeError, match="compteurs vides"):
-        build_banner.compte_depuis_api()
-
-
-def depot_factice(tmp_path, alt="ancien texte, avec de vieux chiffres"):
-    """Un dossier qui ressemble assez au depot pour que main() y travaille."""
-    (tmp_path / "assets").mkdir()
-    (tmp_path / "README.md").write_text(
-        f'<div align="center">\n  <img src="./assets/banner.svg" alt="{alt}" width="900">\n'
-        '</div>\n\nLe reste du README.\n', encoding="utf-8")
-    return tmp_path
-
-
-def test_mode_offline_ecrit_les_valeurs_donnees(tmp_path, monkeypatch):
-    monkeypatch.setattr(sys, "argv", ["build_banner.py", "--offline", "7", "3", "1"])
-    monkeypatch.chdir(depot_factice(tmp_path))
-
-    assert build_banner.main() == 0
-    ecrit = (tmp_path / "assets" / "banner.svg").read_text(encoding="utf-8")
-    assert ">07<" in ecrit and ">03<" in ecrit and ">01<" in ecrit
-
-
-def test_l_alt_du_readme_porte_les_memes_chiffres_que_la_banniere(tmp_path, monkeypatch):
+def test_l_alt_du_readme_suit_la_banniere(tmp_path, monkeypatch):
     """Charge en <img>, le SVG n'expose pas son aria-label : l'alt du README est
-    le seul texte qu'un lecteur d'ecran recoit. Un alt fige devient faux des la
-    premiere relance, et personne ne le voit."""
-    monkeypatch.setattr(sys, "argv", ["build_banner.py", "--offline", "54", "2", "9"])
+    le seul texte qu'un lecteur d'ecran recoit. Les deux portent les memes mots."""
     monkeypatch.chdir(depot_factice(tmp_path))
 
     assert build_banner.main() == 0
 
     readme = (tmp_path / "README.md").read_text(encoding="utf-8")
-    alt = re.search(r'alt="([^"]*)"', readme).group(1)
-    assert "54" in alt and "2" in alt and "9" in alt, f"alt sans les compteurs : {alt!r}"
+    trouve_alt = re.search(r'alt="([^"]*)"', readme)
+    assert trouve_alt, "aucun alt dans le README"
+    alt = trouve_alt.group(1)
+    assert alt == build_banner.texte_alt(), f"alt inattendu : {alt!r}"
     assert "ancien texte" not in readme, "l'ancien alt est reste"
-    # Les memes chiffres des deux cotes : c'est la promesse, pas la presence.
-    aria = re.search(r'aria-label="([^"]*)"',
-                     (tmp_path / "assets" / "banner.svg").read_text(encoding="utf-8")).group(1)
-    for nombre in ("54", "2", "9"):
-        assert nombre in aria and nombre in alt
+    trouve_aria = re.search(r'aria-label="([^"]*)"',
+                            (tmp_path / "assets" / "banner.svg").read_text(encoding="utf-8"))
+    assert trouve_aria, "aucun aria-label dans la banniere"
+    assert trouve_aria.group(1) == build_banner.entites(alt)
 
 
 def test_refus_quand_le_readme_n_a_pas_la_balise_attendue(tmp_path, monkeypatch, capsys):
     """Un README dont la balise a bouge doit faire echouer le build, pas laisser
-    partir une banniere neuve avec un alt perime."""
-    monkeypatch.setattr(sys, "argv", ["build_banner.py", "--offline", "54", "2", "9"])
+    partir une banniere neuve avec un alt qui ne la suit plus."""
     monkeypatch.chdir(tmp_path)
     (tmp_path / "assets").mkdir()
     (tmp_path / "README.md").write_text("plus aucune balise img ici\n", encoding="utf-8")
@@ -239,8 +170,10 @@ def test_refus_quand_le_readme_n_a_pas_la_balise_attendue(tmp_path, monkeypatch,
     assert "ECHEC" in capsys.readouterr().err
 
 
-def test_la_banniere_dit_d_ou_viennent_ses_chiffres():
-    """Sans cette marque, un fichier produit par --offline, donc tape a la main,
-    est indiscernable d'un releve sur l'API."""
-    assert 'data-source="api"' in build_banner.svg(50, 2, 9)
-    assert 'data-source="offline"' in build_banner.svg(50, 2, 9, "offline")
+def test_refus_quand_le_readme_est_absent(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "assets").mkdir()
+
+    assert build_banner.main() == 1
+    assert not (tmp_path / "assets" / "banner.svg").exists()
+    assert "ECHEC" in capsys.readouterr().err

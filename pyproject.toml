@@ -1,0 +1,13 @@
+[project]
+name = "woldenmn-profil"
+version = "1.0.0"
+description = "Bannière et README du profil GitHub de WoldenMn"
+requires-python = ">=3.11"
+license = "MIT"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = ["_archive", "_backup", "export", "__pycache__"]
+
+[tool.ruff]
+line-length = 120

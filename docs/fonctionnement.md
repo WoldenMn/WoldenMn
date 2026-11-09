@@ -6,34 +6,22 @@ Dépôt spécial de GitHub : un dépôt **public** nommé exactement comme le co
 ## La bannière
 
 `assets/banner.svg` n'est jamais édité à la main. Il est généré par
-`build_banner.py`, qui relève les compteurs sur l'API GitHub via `gh`.
+`build_banner.py`, à partir des textes rangés en tête du script.
 
 ```bash
-python build_banner.py                                   # interroge l'API
-python build_banner.py --offline TOTAL PUBLICS LANGAGES  # valeurs explicites, pour tester
+python build_banner.py
 ```
 
-Le script **échoue et n'écrit rien** dans trois cas : l'API est injoignable, elle
-renvoie zéro dépôt, ou tous les dépôts vus sont publics. Le troisième trahit un
-jeton qui ne voit pas les dépôts privés, le `GITHUB_TOKEN` d'Actions par exemple :
-il rendrait un compte partiel sans la moindre erreur. Mieux vaut une bannière
-périmée qu'une bannière fausse.
+Le script réécrit aussi l'attribut `alt` de la bannière dans le README. Chargée
+en `<img>`, une image n'expose pas l'`aria-label` interne du SVG : l'`alt` est le
+seul texte qu'un lecteur d'écran reçoit, et il porte les mêmes mots que l'image.
+Si la balise est introuvable ou en double, le script échoue sans rien écrire : la
+bannière et son texte alternatif vont par paire.
 
-Le fichier produit porte `data-source="api"`, ou `data-source="offline"` s'il
-vient du mode explicite. Sans cette marque, une bannière tapée à la main serait
-indiscernable d'un relevé, et la phrase du README invérifiable sur la pièce
-elle-même.
-
-Deux angles morts, assumés :
-
-- une visibilité **partielle** passe : un jeton qui verrait trois dépôts privés sur
-  cinquante rendrait un compte faux mais plausible ;
-- le jour où tout serait public, le script refuserait d'écrire. L'échec est
-  bruyant, et acceptable tant que l'atelier reste fermé.
-
-Le rail « TS · PYTHON · RUST · DOTNET · PWSH » n'est pas un compteur : c'est la
-pile revendiquée, écrite à la main et assumée comme telle. Le « 09 LANGAGES » à
-côté, lui, est dérivé : le nombre de langages principaux distincts.
+Jusqu'au 2026-11-09, la bannière affichait des compteurs relevés sur l'API GitHub
+(dépôts, dépôts visibles, langages) et une pile de langages. Le compte ne garde
+plus que des dépôts publics, et le profil présente un techos plutôt qu'une pile :
+les compteurs sont partis avec ce qui les justifiait.
 
 ## Ce que le rendu permet
 
@@ -84,11 +72,11 @@ défaut que les tests gardent, l'inversion des opacités de repos. Une capture n
 tranche donc rien ici. Le verdict se lit dans le fichier, et c'est ce que font
 les tests : valeur figée de chaque animation égale à l'opacité de repos.
 
-## Le rafraîchissement, à la demande
+## Régénérer la bannière
 
 ```powershell
 .\Rafraichir-Banniere.ps1        # régénère et montre ce qui a bougé
-.\Rafraichir-Banniere.ps1 -Push  # régénère, commite et publie
+.\Rafraichir-Banniere.ps1 -Push  # régénère, commite et pousse
 ```
 
 Depuis PowerShell 7. Sous Windows PowerShell 5.1, dont la stratégie d'exécution
@@ -102,33 +90,18 @@ sans chemin publierait tout ce qui traîne dans l'index, sous un message qui ne 
 mentionne pas.
 
 Pourquoi le README part avec la bannière : son attribut `alt` porte les mêmes
-compteurs, parce qu'une image chargée en `<img>` n'expose pas l'`aria-label`
-interne du SVG. L'`alt` est donc le seul texte qu'un lecteur d'écran reçoit, et
-`build_banner.py` le réécrit à chaque passage. Publier l'un sans l'autre
-donnerait une image à jour commentée par des chiffres périmés.
-
-### Pourquoi plus de GitHub Actions
-
-Un workflow hebdomadaire tournait ici jusqu'au 2026-09-03. Il exigeait un secret,
-parce que le `GITHUB_TOKEN` d'Actions ne voit que ce dépôt-ci. Le secret n'a
-jamais été posé : le workflow a échoué à chaque passage, deux lundis de suite.
-
-La relance manuelle l'a remplacé, par choix du propriétaire : relancer à la main
-plutôt que déposer un jeton à portée large dans un dépôt public, quitte à laisser
-le chiffre dériver entre deux lancements. Le 2026-09-18, la bannière affichait
-50 dépôts pour 54, faute de relance depuis le 2026-09-03.
+mots que l'image, et `build_banner.py` le réécrit à chaque passage. Publier l'un
+sans l'autre donnerait une image commentée par un texte qui ne la suit plus.
 
 ## Les deux autres assets
 
 | Fichier | Sert à | Où il se téléverse | État |
 |---|---|---|---|
-| `assets/avatar.svg` | photo de profil du compte | Settings > Profile Picture > Edit > Upload a photo | pas téléversé |
+| `assets/avatar.svg` | proposition de photo de profil | Settings > Profile Picture > Edit > Upload a photo | non retenue : le compte a sa propre photo |
 | `assets/social-preview.svg` | vignette quand on partage le lien du dépôt | Settings du dépôt > Social preview > Edit | pas téléversé |
 
-Ces deux téléversements se font à la main, dans l'interface, et n'ont pas encore
-été faits : GitHub sert donc l'identicon par défaut du compte et sa carte de
-partage auto-générée. Tant que c'est le cas, ces deux fichiers sont du travail
-prêt, pas du travail en place.
+Ces téléversements se font à la main, dans l'interface. Tant que la vignette
+n'est pas téléversée, GitHub sert sa carte de partage auto-générée.
 
 GitHub n'accepte que du PNG, du JPG ou du GIF à l'upload, d'où :
 
@@ -204,24 +177,24 @@ python -m pytest tests/
 powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Module Pester -MinimumVersion 5.0.0; Invoke-Pester .\tests\Scripts.Tests.ps1"
 ```
 
-14 tests Python sur `build_banner.py`, 18 tests Pester sur les deux scripts
+10 tests Python sur `build_banner.py`, 18 tests Pester sur les deux scripts
 PowerShell. Pester 5 est requis. S'il n'est installé que pour Windows PowerShell
 5.1 et que la stratégie d'exécution est `Restricted`, le module ne se charge pas
 sans `-ExecutionPolicy Bypass`, dont la portée se limite à ce processus.
 
 Côté Python, les tests gardent ce que le dépôt promet plutôt que la forme du
-dessin : le refus d'écrire quand l'API est muette, renvoie zéro dépôt ou ne voit
-que du public ; le calcul des trois compteurs sur une sortie réaliste de `gh`, où
-chaque erreur plausible donne un autre triplet ; le titre décodé une seule fois et
-lisible au repos ; aucune référence qui sorte du fichier, ni en attribut ni en
-`url()` de style ; les compteurs sur deux chiffres ; l'accord de « visible » ;
-le texte alternatif du README porteur des mêmes chiffres que la bannière, et le
-refus d'écrire quoi que ce soit si ce README ne peut pas suivre.
+dessin : le titre décodé une seule fois et lisible au repos ; aucune référence
+qui sorte du fichier, ni en attribut ni en `url()` de style ; l'accroche et le
+terrain présents dans l'image ; ni compteur, ni pile de langages, ni point
+médian ; les accents en entités ; le texte alternatif du README qui porte les
+mêmes mots que la bannière, et le refus d'écrire quoi que ce soit si ce README
+manque ou ne peut pas suivre.
 
 Côté PowerShell, `Rafraichir-Banniere.ps1` est **exécuté** sous des mocks de `git` et de
 `python` qui enregistrent chaque appel : rien ne part sans `-Push` ; avec, un seul
-commit limité à `assets/banner.svg`, puis un push simple, jamais forcé ; rien non
-plus quand les compteurs n'ont pas bougé ou que `build_banner.py` échoue. Un
+commit limité à `assets/banner.svg` et au README, puis un push simple, jamais
+forcé ; rien non plus quand la bannière n'a pas bougé ou que `build_banner.py`
+échoue. Un
 commit qui échoue arrête tout avant le push, et un push qui échoue lève une
 erreur au lieu d'annoncer la bannière publiée. Pour
 `Exporter-Png.ps1` : la recherche d'Edge, la complétude du PNG face à un
@@ -249,8 +222,8 @@ prise.
 
 | Suite | Mutations injectées | Attrapées |
 |---|---|---|
-| `build_banner.py` | publics inversés, langage absent compté, total confondu avec les publics, langages confondus avec le total, garde « tout public » retirée, garde « zéro dépôt » retirée, écriture malgré l'échec d'API, titre qui boucle à nouveau, `freeze` retiré, glyphe qui finit visible, décodage tardif, cycle ralenti, opacités de repos inversées, image distante, image relative, `url()` externe dans un style, compteur sans zéro de tête, accord de « visible » faux, texte alternatif du README laissé tel quel, garde de la balise du README retirée, provenance de la bannière retirée | 21/21 |
-| scripts PowerShell | `exit 0` retiré du bloc sans `-Push`, commit sans chemin, push forcé, échec de `git commit` ignoré, échec de `git push` ignoré, garde `python` neutralisée, contrôle des compteurs inchangés retiré, échec de `build_banner.py` ignoré, chemin Edge inexistant rendu, `IEND` non vérifié, signature non vérifiée, attente supprimée, appel externe rendu sensible au bruit de stderr, code de sortie ignoré | 14/14 |
+| `build_banner.py` | titre qui boucle à nouveau, `freeze` retiré, glyphe qui finit visible, décodage tardif, cycle ralenti, opacités de repos inversées, image distante, image relative, `url()` externe dans un style, accroche retirée de l'image, terrain retiré de l'image, point médian dans le terrain, accents laissés en clair, texte alternatif du README laissé tel quel, garde de la balise du README retirée, README absent non rattrapé | 16/16 |
+| scripts PowerShell | `exit 0` retiré du bloc sans `-Push`, commit sans chemin, push forcé, échec de `git commit` ignoré, échec de `git push` ignoré, garde `python` neutralisée, contrôle de la bannière inchangée retiré, échec de `build_banner.py` ignoré, chemin Edge inexistant rendu, `IEND` non vérifié, signature non vérifiée, attente supprimée, appel externe rendu sensible au bruit de stderr, code de sortie ignoré, README retiré du commit, splatting retiré du commit | 16/16 |
 
 Ce que les passes successives ont appris, plus utile que le score :
 
@@ -258,10 +231,9 @@ Ce que les passes successives ont appris, plus utile que le score :
   Une contre-expertise a retiré le `exit 0` du bloc sans `-Push` : le script
   enchaînait alors commit et push, et la suite restait verte. Un test qui lit la
   source ne teste pas le comportement.
-- Les cinq premières mutations Python ne touchaient pas au **calcul** des
-  compteurs : quatre erreurs de calcul passaient. La panne décrite plus haut, un
-  jeton qui ne voit que le public, n'en fait pas partie : c'est une erreur de
-  données, que seule la garde « tout public » attrape.
+- Du temps des compteurs, les cinq premières mutations Python ne touchaient pas
+  au **calcul** : quatre erreurs de calcul passaient. Une suite qui ne vise que
+  la forme laisse filer ce que le dépôt promet.
 - La première passe PowerShell a rendu 0 sur 9 : Pester ne se chargeait pas, la
   sortie était vide, et l'outil lisait ce vide comme du vert. D'où le témoin
   connu-mauvais, et d'où l'exigence qu'un motif de mutation apparaisse exactement
