@@ -1,23 +1,18 @@
 <div align="center">
   <img src="./assets/banner.svg" alt="WoldenMn, deux fois à la main, c'est une fois de trop. synk / wintyx / clipforge." width="900">
 
-  <h3>J'écris les outils que j'aurais aimé trouver.</h3>
+  <h3>Si ça n'existe pas, je le monte. Si ça casse, je le répare.</h3>
   <p>Pour Windows, en local, sans compte. Et sans demander la permission au cloud.</p>
 </div>
 
 <br>
 
-```console
-$ whoami
-quelqu'un qui préfère passer une soirée à écrire un script
-plutôt que trente secondes à refaire la même chose
+### La maison
 
-$ cat regles.txt
-local d'abord     tes fichiers restent sur ton disque, pas dans le nuage d'un autre
-zéro compte       aucun « créez un compte pour continuer »
-une chose, bien   pas de couteau suisse à deux cents lames
-code ouvert       ça se lit, ça se garde, ça se forke
-```
+- **Local d'abord** : tes fichiers restent sur ton disque, pas dans le nuage d'un autre.
+- **Zéro compte** : aucun « créez un compte pour continuer ».
+- **Une chose, bien** : pas de couteau suisse à deux cents lames.
+- **Gratuit** : pas d'abonnement, pas de version « Pro » qui cache le bon bouton.
 
 ### Sorti de l'atelier
 
@@ -30,5 +25,5 @@ code ouvert       ça se lit, ça se garde, ça se forke
 <br>
 
 <div align="center">
-  <sub>Un bug ? Ouvre un ticket sur le dépôt concerné. Un compliment ? Pareil, ça marche aussi.</sub>
+  <sub>Un souci ? Signale-le sur le dépôt concerné. Un compliment ? Pareil, ça marche aussi.</sub>
 </div>

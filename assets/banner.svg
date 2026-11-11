@@ -198,7 +198,7 @@
   <rect x="42" y="176" width="816" height="1" fill="#2f3441"/>
   <text x="56" y="210" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="12" fill="#949aa8">synk / wintyx / clipforge</text>
 
-  <text x="844" y="210" text-anchor="end" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="12" fill="#949aa8">&#231;a compile</text>
+  <text x="844" y="210" text-anchor="end" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="12" fill="#949aa8">&#231;a tourne</text>
   <circle cx="860" cy="206" r="4" fill="#3ecf8e">
     <animate attributeName="opacity" values="1;1;0.15;1;1" keyTimes="0;0.45;0.5;0.55;1" dur="2.6s" repeatCount="indefinite"/>
   </circle>
