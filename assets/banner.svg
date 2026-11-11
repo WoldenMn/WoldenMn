@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 240" width="900" height="240" role="img" aria-label="WoldenMn, des outils pour windows. locaux, l&#233;gers, sans compte. synk / wintyx / clipforge.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 240" width="900" height="240" role="img" aria-label="WoldenMn, deux fois &#224; la main, c'est une fois de trop. synk / wintyx / clipforge.">
   <title>WoldenMn</title>
   <defs>
     <linearGradient id="scan" x1="0" y1="0" x2="1" y2="0">
@@ -173,7 +173,7 @@
   </rect>
 
   <rect x="56" y="52" width="3" height="18" fill="#3ecf8e"/>
-  <text x="72" y="66" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="12" fill="#949aa8">~/woldenm</text>
+  <text x="72" y="66" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="12" fill="#949aa8">~/atelier</text>
 
   <text x="79.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#949aa8" opacity="0">#<animate attributeName="opacity" values="1;0" keyTimes="0;0.0600" dur="9.0s" calcMode="discrete" fill="freeze"/></text>
   <text x="79.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#e6e8ee" opacity="1">W<animate attributeName="opacity" values="0;1" keyTimes="0;0.0600" dur="9.0s" calcMode="discrete" fill="freeze"/></text>
@@ -193,12 +193,12 @@
   <text x="401.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#e6e8ee" opacity="1">N<animate attributeName="opacity" values="0;1" keyTimes="0;0.3050" dur="9.0s" calcMode="discrete" fill="freeze"/></text>
 
   <rect x="56" y="130" width="368" height="1" fill="#2f3441"/>
-  <text x="56" y="154" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="14" fill="#e6e8ee">des outils pour windows. locaux, l&#233;gers, sans compte.</text>
+  <text x="56" y="154" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="14" fill="#e6e8ee">deux fois &#224; la main, c'est une fois de trop.</text>
 
   <rect x="42" y="176" width="816" height="1" fill="#2f3441"/>
   <text x="56" y="210" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="12" fill="#949aa8">synk / wintyx / clipforge</text>
 
-  <text x="844" y="210" text-anchor="end" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="12" fill="#949aa8">en ligne</text>
+  <text x="844" y="210" text-anchor="end" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="12" fill="#949aa8">&#231;a compile</text>
   <circle cx="860" cy="206" r="4" fill="#3ecf8e">
     <animate attributeName="opacity" values="1;1;0.15;1;1" keyTimes="0;0.45;0.5;0.55;1" dur="2.6s" repeatCount="indefinite"/>
   </circle>

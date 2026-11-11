@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0] - 2026-11-11
+
+### Modifié
+
+- Profil réécrit : accroche, règles de la maison et projets présentés avec un peu plus de caractère.
+- Bannière renouvelée.
+
 ## [1.1.0] - 2026-11-11
 
 ### Modifié
