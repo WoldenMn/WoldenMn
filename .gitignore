@@ -1,28 +1,14 @@
-_preview.html
-_degrade.svg
-_shot.png
 __pycache__/
 *.pyc
-_rendu.html
-_body.json
-_err.txt
-banniere-apercu.png
-_archive/
-export/
 .pytest_cache/
+.ruff_cache/
+/_*/
+/_*.*
+*.png
+export/
 
-# conventions locales de poste, jamais partagees
-CLAUDE.md
-_backup/
-_poubelle/
-_corr/
-audits/
-
-# secrets et config machine
 .env
 .env.*
 !.env.example
 *.pem
 *.key
-.claude/settings.local.json
-.claude/launch.json

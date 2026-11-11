@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 240" width="900" height="240" role="img" aria-label="WoldenMn, techos, fan de tech. je teste, je casse, je r&#233;pare. windows au quotidien, un serveur &#224; la maison, une imprimante 3D, du stream.">
-  <title>WoldenMn, techos fan de tech</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 240" width="900" height="240" role="img" aria-label="WoldenMn, des outils pour windows. locaux, l&#233;gers, sans compte. synk / wintyx / clipforge.">
+  <title>WoldenMn</title>
   <defs>
     <linearGradient id="scan" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#3ecf8e" stop-opacity="0"/>
@@ -193,10 +193,10 @@
   <text x="401.0" y="108" text-anchor="middle" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="44" font-weight="700" fill="#e6e8ee" opacity="1">N<animate attributeName="opacity" values="0;1" keyTimes="0;0.3050" dur="9.0s" calcMode="discrete" fill="freeze"/></text>
 
   <rect x="56" y="130" width="368" height="1" fill="#2f3441"/>
-  <text x="56" y="154" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="14" fill="#e6e8ee">techos, fan de tech. je teste, je casse, je r&#233;pare.</text>
+  <text x="56" y="154" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="14" fill="#e6e8ee">des outils pour windows. locaux, l&#233;gers, sans compte.</text>
 
   <rect x="42" y="176" width="816" height="1" fill="#2f3441"/>
-  <text x="56" y="210" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="12" fill="#949aa8">windows au quotidien, un serveur &#224; la maison, une imprimante 3D, du stream</text>
+  <text x="56" y="210" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="12" fill="#949aa8">synk / wintyx / clipforge</text>
 
   <text x="844" y="210" text-anchor="end" font-family="Consolas, 'Cascadia Mono', 'DejaVu Sans Mono', monospace" font-size="12" fill="#949aa8">en ligne</text>
   <circle cx="860" cy="206" r="4" fill="#3ecf8e">

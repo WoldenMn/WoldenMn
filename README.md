@@ -1,16 +1,14 @@
 <div align="center">
-  <img src="./assets/banner.svg" alt="WoldenMn, techos, fan de tech. je teste, je casse, je répare. windows au quotidien, un serveur à la maison, une imprimante 3D, du stream." width="900">
+  <img src="./assets/banner.svg" alt="WoldenMn, des outils pour windows. locaux, légers, sans compte. synk / wintyx / clipforge." width="900">
+
+  <h3>Des outils pour Windows qui font une chose, et la font bien.</h3>
+  <p>Locaux, sans compte, sans cloud. Ouverts à tous.</p>
 </div>
 
-Techos, fan de tech. Je bidouille jusqu'à ce que ça tourne comme je veux.
+<br>
 
- 
-### En libre accès
-
-| Projet | En une phrase |
+| Projet | Ce qu'il fait |
 | --- | --- |
-| [Synk](https://github.com/WoldenMn/synk) | Le suivi santé sur le PC : montres, bagues et fichiers exportés au même endroit, rien ne quitte la machine. |
-| [Wintyx](https://github.com/WoldenMn/wintyx) | Analyse, nettoie, optimise et durcit Windows 10 et 11, en local. |
-| [ClipForge](https://github.com/WoldenMn/ClipForge) | Transforme une VOD de stream en clips verticaux sous-titrés. |
-
-<sub>Tout tourne sous Windows, en local. La bannière est générée par le code de ce dépôt : <a href="docs/fonctionnement.md">comment elle marche</a>.</sub>
+| **[Synk](https://github.com/WoldenMn/synk)** | Montres, bagues et exports santé réunis dans une seule appli de bureau. Rien ne quitte la machine. |
+| **[Wintyx](https://github.com/WoldenMn/wintyx)** | Analyse, nettoie, optimise et durcit Windows 10 et 11, sans compte ni télémétrie. |
+| **[ClipForge](https://github.com/WoldenMn/ClipForge)** | Une VOD de stream devient une série de clips verticaux sous-titrés, prêts à poster. |
