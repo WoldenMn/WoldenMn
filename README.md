@@ -4,8 +4,7 @@
 
 Techos, fan de tech. Je bidouille jusqu'à ce que ça tourne comme je veux.
 
-Windows au quotidien, un serveur à la maison, une imprimante 3D qui chauffe souvent, et du stream. Quand il me manque un outil, je me le fabrique. Ceux qui tiennent la route sont ici, en libre accès.
-
+ 
 ### En libre accès
 
 | Projet | En une phrase |
